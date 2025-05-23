@@ -1,10 +1,10 @@
-# Phonebook convert between Fritzbox-xml &lt;=> vcf 
+# Phonebook convert between Fritzbox-xml &lt;=> vcf / Vcard
 <!-- *In language english ( 🇬🇧 :gb: ) :* -->
 
 This is a Web-App, or call it online convert-Service .
 
 ## Start it here:
-** <https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/> **
+**<https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/>**
 
 Possible to convert:
 
@@ -18,13 +18,13 @@ Other functions:
  
 -----------------------------------
 
-# Telefonbuch konvertieren zwischen Fritzbox-xml &lt;=> vcf 
+# Telefonbuch konvertieren zwischen Fritzbox-xml &lt;=> vcf / Vcard
 *In deutscher Sprache / In language german ( 🇩🇪 :de: ) :*
 
 Dies ist eine Web-App, oder nenne es online konvertier Dienst.
 
 ## Starte es hier:
-** <https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/> **
+**<https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/>**
 
 Möglich umzuwandeln ist:
 
