@@ -28,7 +28,6 @@ Dies ist eine Web-App, oder nenne es online konvertier Dienst.
 
 Möglich umzuwandeln ist:
 
-
 * Fritzbox *.xml* zu *.vcf* / Vcard
 * *.vcf* / Vcard zu Fritzbox *.xml*
 
