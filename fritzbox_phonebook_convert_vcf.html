@@ -98,22 +98,35 @@
 <input type="file" multiple id="file-input_auto-detect" autocomplete="off" style="display:none" /><a href="#" id="file-input_auto-detect_close_button" style="display:none;background: white;  font-size: 2em;  text-align: right;  top: 10%;  position: absolute;  padding: 0.5em;  right: 10%; border-radius:20pt;" onClick="unhighlight();return false;" class="maybebutton">Close 🗙</a><br>
 </div>
 <p>
-<span lang="en" class="en">Your .xml file:</span><span lang="de" class="de">Ihre .xml Datei:</span>
+<label for="file-input_xml" id="label_file-input_xml">
+ <span lang="en" class="en">Your .xml file:</span>
+ <span lang="de" class="de">Ihre .xml Datei:</span>
+</label>
 <input type="file" multiple id="file-input_xml" autocomplete="off" /></p>
+<p> <span lang="en" class="en"> - or - </span><span lang="de" class="de"> - oder - </span> </p>
 <p>
-<p><span lang="en" class="en"> - or - </span><span lang="de" class="de"> - oder - </span></p>
-<span lang="en" class="en">Your .vcf file:</span><span lang="de" class="de">Ihre .vcf Datei:</span>
-<input type="file" multiple id="file-input_format2" autocomplete="off" /></p>
-</br>
-<p style="color:#999"> 
-<span lang="en" class="en">Alternativ with Drag & Drop. </span>
-<span lang="de" class="de">Alternativ per Drag & Drop<!-- <small style="color:#999;">(also das hier hin rein-ziehen von Datei<em>en</em> )</small>-->.</span>
+<label for="file-input_format2" id="label_file-input_format2">
+ <span lang="en" class="en">Your .vcf file:</span>
+ <span lang="de" class="de">Ihre .vcf Datei:</span>
+</label>
+<input type="file" multiple id="file-input_format2" autocomplete="off" />
 </p>
+</br>
 <br>
 <div id="ready" style="display:none;margin-top:5pt;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
- <span lang="en" class="en">Ready. Check now your download folder</span>
- <span lang="de" class="de">Fertig. Überprüfen Sie Ihren Download-Ordner</span>
+ <span lang="en" class="en">Ready. Look in your download folder</span>
+ <span lang="de" class="de">Fertig. Schauen Sie Ihren Download-Ordner</span>
 </div>
+
+<div id="ready_note_export_to_vcf_multivcard" style="margin-top:5pt;display:none;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
+ <span lang="en" class="en">Please Note: <u>Multi-Vcard file:</u><br> This is a Multi-Vcard file. It have all contacts in one single file. Some Programs does not support this. <br>Split file: If you need a vcard-file per each Person: <a href="#" onclick="convert_to_vcf(true);return false;">Split in <span id="ready_note_export_to_vcf_multivcard__counter_splited1">X</span> separated files<a/>.<br> Alternativ: please try this other tool: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
+ <span lang="de" class="de">Bitte beachten Sie: <u>Multi-Vcard Datei:</u><br> Die ist eine Multi-Vcard Datei. Sie enthält alle Kontakte in einer Datei. Manche Programme unterstützen dies nicht. <br>Aufteilen: Wenn sie je Person eine einzelne Vcard-Datei benötigen: <a href="#" onclick="convert_to_vcf(true);return false;">Aufteilen in <span id="ready_note_export_to_vcf_multivcard__counter_splited2">X</span> verschiedene Dateien<a/>.<br> Alternativ: Bitte eine anderes Tool verwenden: z.B.: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
+</div>
+<div id="ready_note_export_to_vcf_allversions" style="margin-top:5pt;display:none;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
+ <span lang="en" class="en">Please Note: <u>VCard Versions</u>:<br>There were three files created. There have different vcard Version (v2.1 , v3.0 , v4.0). Which file you need may depends on your target.</span>
+ <span lang="de" class="de">Bitte beachten Sie: <u>VCard Versionen</u>:<br>Es wurden drei Dateien erstellt. Es sind verschiedene vcard Versionen (v2.1 , v3.0 , v4.0). Welche Datei Sie benötigen, kommt auf ihr Ziel-Programm an.</span>
+</div>
+
 <p id="show_advanced_view_link_link_close" style="display:none">
 <a href="#" onclick="show_advanced_view('hide');return false" class="maybebutton">
     <span lang="en" class="en">&blacktriangledown; &nbsp; close text source window 🗙</span>
@@ -126,6 +139,7 @@
     <span lang="de" class="de">&blacktriangleright; &nbsp; Text-Fenster anzeigen </span>
   </a>
 </p>
+
 <div id="select_file_xml_div" class="advanced_view">
 <label for="phonebook_xml">From Fritzbox .XML File:</label><br>
 <textarea id="phonebook_xml" autocomplete="off">
@@ -149,15 +163,6 @@
 </phonebook>
 </phonebooks>
 </textarea>
-</div>
-
-<div id="ready_note_export_to_vcf_multivcard" style="margin-top:5pt;display:none;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
- <span lang="en" class="en">Please Note: This is a Multi-Vcard file. It have all Contacts in one File. Some Programs does not support this. <br>Split: If you need a vcard-file per each Person: <a href="#" onclick="convert_to_vcf(true);return false;">Split in <span id="ready_note_export_to_vcf_multivcard__counter_splited1">X</span> seperated files<a/>.<br> Alternativ: please try this other tool: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
- <span lang="de" class="de">Bitte beachten Sie: Die ist eine Multi-Vcard Datei. Sie enthält alle Kontakte in einer Datei. Manche Programme unterstützen dies nicht. <br>Aufteilen: Wenn sie jedoch je Person eine einzelne Vcard-Datei benötigen: <a href="#" onclick="convert_to_vcf(true);return false;">Aufteilen in <span id="ready_note_export_to_vcf_multivcard__counter_splited2">X</span> verschiedene Dateien<a/>.<br> Alternativ: Bitte eine anderes Tool verwenden: z.B.: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
-</div>
-<div id="ready_note_export_to_vcf_allversions" style="margin-top:5pt;display:none;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
- <span lang="en" class="en">Please Note: There was three files created. There have different vcard Version (v2.1 , v3.0 , v4.0). Which file you need may depends on your target.</span>
- <span lang="de" class="de">Bitte beachten Sie: Es wurden drei Dateien erstellt. Es sind verschiedene vcard Versionen (v2.1 , v3.0 , v4.0). Welche Datei Sie benötigen, kommt auf ihr Ziel-Programm an.</span>
 </div>
 
 <!-- ↓↑ ⇓⇑ ⇩⇧ ⟱ ⟰ ⬆⬇ -->
@@ -198,23 +203,7 @@ END:VCARD
   </summary>
   <fieldset><legend>Settings</legend>
   <div>
-  <fieldset >
-    <legend>
-      <span lang="en" class="en">Uploaded file</span>
-      <span lang="de" class="de">Hochgeladene Datei</span>
-    </legend>
-    <input type="checkbox" onChange="showOnlySupportedChange(this.value)" id="setting__upload__filetype_only_accepted" checked autocomplete="off">
-    <label for="setting__upload__filetype_only_accepted">
-      <span lang="en" class="en">Show only supported files (.xml / .vcf / ~) <span style="color:#999">( only these are selectable in file upload window/dialog in browser )</span></span>
-      <span lang="de" class="de">Zeige nur unterstützte Dateien (.xml / .vcf / ~) an <span style="color:#999">( nur diese sind auswählbar im Datei-auswählen Fenster im Browser )</span></span>
-    </label> <br />
-    <input type="checkbox" id="setting__upload__filetype_auto_detect" checked autocomplete="off">
-    <label for="setting__upload__filetype_auto_detect">
-      <span lang="en" class="en">Automatic detection of file-type</span>
-      <span lang="de" class="de">Automatisch Datei-Type feststellen</span>
-    </label> <span style="color:#999">(detected by file-extension .xml / .vcf /.vcard or MIME-Type ; Otherwise you will be ask)</span>
-  </fieldset>
-  <fieldset ><legend>* to xml (=import to fritzbox)</legend>
+  <fieldset ><legend>xml &lArr; vcf (=import to fritzbox)</legend>
     <!--<span lang="en" class="en">Phone-Number edits:</span>
     <span lang="de" class="de">Telefon-Nummer bearbeiten:</span>-->
     <p style="margin: 0pt;">
@@ -233,7 +222,7 @@ END:VCARD
     </select>
     </p>
   </fieldset>
-  <fieldset ><legend>xml to * (=export from fritzbox)</legend>
+  <fieldset ><legend>xml &rArr; vcf (=export from fritzbox)</legend>
     <!--<span lang="en" class="en">Phone-Number edits:</span>
     <span lang="de" class="de">Telefon-Nummer bearbeiten:</span>-->
     <p style="margin: 0pt;">
@@ -256,8 +245,7 @@ END:VCARD
     <span lang="en" class="en" style="color:#999">(if missing) Example: 030 for City Berlin in Germany.</span>
     <span lang="de" class="de" style="color:#999">(wenn sie fehlt) Beispiel: 030 für die Stadt Berlin.</span>
     </p>
-  </fieldset>
-  <fieldset ><legend>xml to .vcf (=export from fritzbox)</legend>
+  <hr>
     <p style="margin: 0pt;">
     <script language="javascript">
     function settings_ui_toggleVcfAllV(show){
@@ -317,13 +305,13 @@ END:VCARD
       <span lang="de" class="de">Email</span>
     </label>
     </p>
-    <span lang="en" class="en">At splited (=seperated) files Export: </span>
-    <span lang="de" class="de">Bei geteilte dateien export: </span>
-    <input type="checkbox" id="setting__xml2vcf__splited__filename_fullname" autocomplete="off" />
+    <span lang="en" class="en">At splited (=separated) files Export (=for each single contact will be a single file created): </span>
+    <span lang="de" class="de">Bei geteilte dateien export (=für jeden einzelne Kontakt wird eine einzelne Datei erstellt): </span>
     <label for="setting__xml2vcf__splited__filename_fullname">
-      <span lang="en" class="en">Filename: Full Name</span>
-      <span lang="de" class="de">Dateiname: Ganze Name</span>
+      <span lang="en" class="en">Filename: Full Person Name</span>
+      <span lang="de" class="de">Dateiname: Ganze Personen Name</span>
     </label>
+    <input type="checkbox" id="setting__xml2vcf__splited__filename_fullname" autocomplete="off" />
     </p>
   </fieldset>
   <br />
@@ -337,6 +325,33 @@ END:VCARD
     <span lang="de" class="de">Das ist der neue Telefonbuch-Namen in der Fritzbox selbst. Es ist nicht der Datei-Name.</span>
   </span>
   <button type="button" onClick="document.getElementById(last_uploaded_file__fieldid).dispatchEvent(new Event('change'));" id="convert_again_file" style="display:none;margin-top:10pt;margin-bottom:10pt;" value="Convert the same file again" ><span lang="en" class="en">Convert the same file again</span><span lang="de" class="de">Konvertiere die gleiche Datei nochmal</span></button>
+  <details>
+   <summary>
+      <span lang="en" class="en">unimportant: Select file dialog - type detection</span>
+      <span lang="de" class="de">unwichtig: Datei auswählen - Datei Type erkennung</span>
+   </summary>
+      <fieldset >
+        <legend>
+          <span lang="en" class="en">Select file dialog</span>
+          <span lang="de" class="de">Datei auswählen</span>
+        </legend>
+        <input type="checkbox" onChange="showOnlySupportedChange(this.value)" id="setting__upload__filetype_only_accepted" checked autocomplete="off">
+        <label for="setting__upload__filetype_only_accepted">
+          <span lang="en" class="en">Show only supported files (.xml / .vcf / ~) <span style="color:#999">( only these are selectable in file upload window/dialog in browser )</span></span>
+          <span lang="de" class="de">Zeige nur unterstützte Dateien (.xml / .vcf / ~) an <span style="color:#999">( nur diese sind auswählbar im Datei-auswählen Fenster im Browser )</span></span>
+        </label> <br />
+        <input type="checkbox" id="setting__upload__filetype_auto_detect" checked autocomplete="off">
+        <label for="setting__upload__filetype_auto_detect">
+          <span lang="en" class="en">Automatic detection of file-type
+             <span style="color:#999"><br>(detected by file-extension .xml / .vcf /.vcard or MIME-Type ; Otherwise you will be ask)</span>
+          </span>
+          <span lang="de" class="de">Automatisch Datei-Type feststellen
+            <span style="color:#999"><br>(festgestellt wird der Datei-Type über Datei-Erweiterung (=Datei-Endung) .xml / .vcf /.vcard or MIME-Type ; Ansonsten wird man gefragt)</span>
+          </span>
+        </label>
+      </fieldset>
+  </details>
+  <br>
   </div>
   </fieldset>
  </details>
@@ -847,8 +862,8 @@ function readMultipleFiles(e) {
     return;
   }
   document.getElementById('convert_again_file').style.display='block';
-  var text__AskShouldIMerge="Merge the multiple files to a single phonebook? \n(only with the same file-format possible)";
-  if(selectedLanguage=="de")text__AskShouldIMerge="Zusammenfügen von verschiedenen einzelenen Telefonbüchern zu einen einzigen?";
+  var text__AskShouldIMerge="Merge to a single merged phonebook?"; //\n(only with the same file-format possible)
+  if(selectedLanguage=="de")text__AskShouldIMerge="Zusammenfügen zu einen einzelnen Telefonbuch?";
   if(files.length>1 && confirm(text__AskShouldIMerge)) do_a_merge=true;
   
   readfiles__files_count = files.length;
@@ -982,8 +997,8 @@ dropAreaDetect.addEventListener('drop', unhighlight, false);
 <!--<em style="color:#ababab;float:right;padding-right:10pt; ">file process only name & phone number</em>-->
 <details>
  <summary onclick="window.scrollBy(0, 100);window.setTimeout('window.scrollBy(0, 100);',50)" title="more privacy info">
-  <span lang="en" class="en">Full Data-Privacy : because directly converted inside of your Browser: no server, no cloud)</span>
-  <span lang="de" class="de">Voller Datenschutz : da direkt im ihren Browser konvertiert wird: ohne Server, ohne cloud)</span>
+  <span lang="en" class="en">Full Data-Privacy : because directly converted inside of your Browser: no server, no cloud</span>
+  <span lang="de" class="de">Voller Datenschutz : da direkt in ihrem Browser konvertiert wird: ohne Server, ohne cloud</span>
  </summary>
 <div lang="en" class="en" id="sec_adv_en"><h3>Privacy</h3>You Privacy are keept: This Page works just on your computer (or offline). Your Data will stay only on your own local computer. No Cloud, no Server. It is just pure local JavaScript-Code in your Browser. <br><br>You are still unsure, using this?: My Security-Advise:<br><a name="sec_adv_en" />
 <p>Option A:
@@ -1055,8 +1070,10 @@ Possible to convert:
 </ul>
 Other functions:
 <ul>
-<li> Multiple Files can be selected and merge before: .vcf Files. (press <kbd>STRG</kbd> while file selection).</li>
 <li> It's running in directly your browser. ( No need of installation. No server. No Cloud. Only local Programm-Code. )</li>
+<li> Multiple files can be selected and merge before.</li>
+<li> From .xml to .vcf: create separated multiple .vcf files. These multiple files contains just a single person / contact.
+</li>
 </ul>
  Short adress:
 <ul>
@@ -1076,8 +1093,10 @@ Möglich umzuwandeln ist:
 
 Weitere Funktionen:
 <ul>
-<li> Mehrere Dateien auswählen und vorher zusammenfügen: .vcf Dateien können vorher zusammengefügt werden. (beim Hochladen <kbd>STRG</kbd> gedrückt halten oder per <kbd>⇧ Shift<small>(auch Umschalttaste genannt)</small></kbd>)</li>
 <li> Es läuft direkt im Browser.  ( Es ist keine Installtion nötig. Kein Server. Keine Cloud. Nur lokal ausgeführte Programmcode. )</li>
+<li> Mehrere Dateien auswählen und vorher zusammenfügen: Dateien können vorher zusammengefügt werden.</li>
+<li> Von .xml zu .vcf: Single- und Multi-VCard dateien können erstellt werden. Bei Single-Vcard sind die Kontakt-daten auf mehrere einzelne (getrennte) .vcf Dateien aufgeteilt. Diese .vcf Dateien enthalten also je Datei nur eine einzelne Person / Kontakt.
+</li>
 </ul>
 </span>
  <h3>
@@ -1125,6 +1144,13 @@ convert .xml to .vcf (=export) <br/>
 </ul>
 </details>
 </aside>
+
+<span style="color:#aaa">
+<small>
+<span lang="en" class="en">Drag'n'Drop possible. </span>
+<span lang="de" class="de" title="(also das hier hin rein-ziehen von Datei(en))">Drag'n'Drop möglich<!-- <small style="color:#999;">(also das hier hin rein-ziehen von Datei<em>en</em> )</small>-->.</span>
+</small>
+</span>
 
 <br/>
 
