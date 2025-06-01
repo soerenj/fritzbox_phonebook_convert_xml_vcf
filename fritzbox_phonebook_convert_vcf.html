@@ -39,8 +39,8 @@
 	"name": "convert phonebook Fritzbox",
 	"description": "convert phonebook files from router Fritzbox .xml to .vcf (vcard) and backwards",
 	"programmingLanguage": "javascript",
-	"dateModified": "2025-05-28",
-	"softwareVersion": "0.31",
+	"dateModified": "2025-06-01",
+	"softwareVersion": "0.311",
 	"inLanguage": ["en", "de"],
     "mainEntityOfPage":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
 	"url":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
@@ -50,7 +50,7 @@
 }
 </script>
 <style>  input{ cursor: pointer } .advanced_view{ display:none; } textarea{ min-width:500pt;width:80%;height:100pt;} @media (min-height:800pt){ textarea{ height:200pt;} } details summary { color:LinkText;} details summary:hover, details summary :hover, a .en:hover, a .de :hover{ text-decoration:underline; cursor:pointer; color:#000; } details div { margin-left: 12pt; } a:hover span{ text-decoration:underline; }
-.drop-area_highlight, .drop-area_text_highlight  { border-color: purple; width: 90%; min-width:90%; height:90%; min-height:90%; background:rgba(64, 64, 64, 0.5); position:absolute;  top:0px; left:0px; border: 2px dashed #ccc; border-radius: 20pt; margin:5%; font-size: 3em; text-align: center;  padding-top: 25%;} .de{ display:none; } input#setting__xml2__phonenumber_edit_your_countrycode:invalid, input#setting__xml2__phonenumber_edit_your_areacode:invalid {border: medium solid red; } .onlytouchscreen{ display:none; } @media (pointer: coarse){.onlytouchscreen{ display:inline; } }</style>
+.drop-area_highlight, .drop-area_text_highlight  { border-color: purple; width: 90%; min-width:90%; height:90%; min-height:90%; background:rgba(64, 64, 64, 0.5); position:absolute;  top:0px; left:0px; border: 2px dashed #ccc; border-radius: 20pt; margin:5%; font-size: 3em; text-align: center;  padding-top: 25%;} .de{ display:none; } input#setting__xml2__phonenumber_edit_your_countrycode:invalid, input#setting__xml2__phonenumber_edit_your_areacode:invalid {border: medium solid red; } .onlytouchscreen{ display:none; } @media (pointer: coarse){.onlytouchscreen{ display:inline; } } input + label {vertical-align:top;}</style>
 <style>
 @media (pointer: coarse){
   .onlytouchscreen{ display:inline; }
@@ -62,8 +62,8 @@
 <body>
 <!--
  /*
- * version: 0.31
- * date: 2025-05-28
+ * version: 0.311
+ * date: 2025-06-01
  *
  * Licence 
  *
@@ -115,16 +115,16 @@
 <br>
 <div id="ready" style="display:none;margin-top:5pt;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
  <span lang="en" class="en">Ready. Look in your download folder</span>
- <span lang="de" class="de">Fertig. Schauen Sie Ihren Download-Ordner</span>
+ <span lang="de" class="de">Fertig. Schauen Sie in Ihren Download-Ordner</span>
 </div>
 
 <div id="ready_note_export_to_vcf_multivcard" style="margin-top:5pt;display:none;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
- <span lang="en" class="en">Please Note: <u>Multi-Vcard file:</u><br> This is a Multi-Vcard file. It have all contacts in one single file. Some Programs does not support this. <br>Split file: If you need a vcard-file per each Person: <a href="#" onclick="convert_to_vcf(true);return false;">Split in <span id="ready_note_export_to_vcf_multivcard__counter_splited1">X</span> separated files<a/>.<br> Alternativ: please try this other tool: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
- <span lang="de" class="de">Bitte beachten Sie: <u>Multi-Vcard Datei:</u><br> Die ist eine Multi-Vcard Datei. Sie enthält alle Kontakte in einer Datei. Manche Programme unterstützen dies nicht. <br>Aufteilen: Wenn sie je Person eine einzelne Vcard-Datei benötigen: <a href="#" onclick="convert_to_vcf(true);return false;">Aufteilen in <span id="ready_note_export_to_vcf_multivcard__counter_splited2">X</span> verschiedene Dateien<a/>.<br> Alternativ: Bitte eine anderes Tool verwenden: z.B.: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
+ <span lang="en" class="en">Please Note: <u>Multi-Vcard file:</u><br> This is a Multi-Vcard file. It have all contacts in one single file. Some Programs does not support this. <br>Split file: If you need a vcard-file per each Person: <a href="#" onclick="convert_to_vcf(true);return false;">Split in <span id="ready_note_export_to_vcf_multivcard__counter_splited1">X</span> separated Single-VCard-files<a/>.<br> Alternativ: please try this other tool: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
+ <span lang="de" class="de">Information: <u>Multi-Vcard Datei:</u><br> Die ist eine Multi-Vcard Datei. Sie enthält alle Kontakte in einer Datei. Manche Programme unterstützen dies nicht. <br>Aufteilen: Wenn sie je Person eine einzelne Vcard-Datei benötigen: <a href="#" onclick="convert_to_vcf(true);return false;">Aufteilen in <span id="ready_note_export_to_vcf_multivcard__counter_splited2">X</span> verschiedene Single-VCard-Dateien<a/>.<br> Alternativ: Bitte eine anderes Tool verwenden: z.B.: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
 </div>
 <div id="ready_note_export_to_vcf_allversions" style="margin-top:5pt;display:none;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
  <span lang="en" class="en">Please Note: <u>VCard Versions</u>:<br>There were three files created. There have different vcard Version (v2.1 , v3.0 , v4.0). Which file you need may depends on your target.</span>
- <span lang="de" class="de">Bitte beachten Sie: <u>VCard Versionen</u>:<br>Es wurden drei Dateien erstellt. Es sind verschiedene vcard Versionen (v2.1 , v3.0 , v4.0). Welche Datei Sie benötigen, kommt auf ihr Ziel-Programm an.</span>
+ <span lang="de" class="de">Information: <u>VCard Versionen</u>:<br>Es wurden drei Dateien erstellt. Es sind verschiedene vcard Versionen (v2.1 , v3.0 , v4.0). Welche Datei Sie benötigen, kommt auf ihr Ziel-Programm an.</span>
 </div>
 
 <p id="show_advanced_view_link_link_close" style="display:none">
@@ -325,10 +325,11 @@ END:VCARD
     <span lang="de" class="de">Das ist der neue Telefonbuch-Namen in der Fritzbox selbst. Es ist nicht der Datei-Name.</span>
   </span>
   <button type="button" onClick="document.getElementById(last_uploaded_file__fieldid).dispatchEvent(new Event('change'));" id="convert_again_file" style="display:none;margin-top:10pt;margin-bottom:10pt;" value="Convert the same file again" ><span lang="en" class="en">Convert the same file again</span><span lang="de" class="de">Konvertiere die gleiche Datei nochmal</span></button>
+  <br/><br/>
   <details>
    <summary>
-      <span lang="en" class="en">unimportant: Select file dialog - type detection</span>
-      <span lang="de" class="de">unwichtig: Datei auswählen - Datei Type erkennung</span>
+      <span lang="en" class="en">unimportant setting: Select file dialog - type detection</span>
+      <span lang="de" class="de">unwichtige Einstellung: Datei auswählen - Datei Type erkennung</span>
    </summary>
       <fieldset >
         <legend>
@@ -828,45 +829,107 @@ function ask__xml_convert_to(filename) {
   uploaded_file_convert_to='vcf'; return convert_to_vcf__maybe_all(filename);
 }
 
-function f_merge__appendfile(format,origin,add){
-  if(!do_a_merge)return add;
+function f_merge__appendfile(format,origin,add,filename){
+  var text__no_entry="no entry found in the file "+filename;
+  if(selectedLanguage=="de") text__no_entry="kein Eintrag gefunden in Datei "+filename;
+  if(!mergeFiles)return add;
   if(format=="xml"){
      var start =add.search(/<contact/);
-     if(start<=0){ alert("no entry found in one file");return origin;} //=not found
+     if(start<=0){ alert(text__no_entry);return origin;} //=not found
      if(origin.length==0) origin=add;
      else {
        var end=add.search(/[(\r\n)|(\n\r)|\r|\n]<\/phonebook>/);
-       if(end<=0){ alert("no entry found in one file");return origin;} //=not found
+       if(end<=0){ alert(text__no_entry);return origin;} //=not found
        origin=origin.replace(/(<\/phonebook>)/,add.substring(start,end)+"</phonebook>");
      }
   }
-  if(format=="vcf")   origin+=add;
+  if(format=="vcf"){   
+    if(add.search('BEGIN:VCARD')>=0) origin+=add;
+    else alert(text__no_entry);
+  }
   return origin;
 }
 
-var do_a_merge = false;
-var readfiles__files_count = 0;
-var readfiles__files_counter = 0;
-var f_merge_c = Array();
-f_merge_c["xml"] = 0;
-f_merge_c["vcf"] = 0;
+var mergeFiles = false;
+var files_counted = 0;
+var files_counter = 0;
+var counterFiletypes = Array();
+counterFiletypes["xml"] = 0;
+counterFiletypes["vcf"] = 0;
   
 function readMultipleFiles(e) {
-  f_merge_c["xml"] = 0;
-  f_merge_c["vcf"] = 0;
-  do_a_merge=false;
-  readfiles__files_counter = 0;
+  //translation
+  var text__file = "file";   if(selectedLanguage=="de") text__files = "Dateie";
+  var text__files = "files"; if(selectedLanguage=="de") text__files = "Dateien";
+  var text__found = "found";        if(selectedLanguage=="de") text__found = "gefunden";
+  var text__is_this_a ="Is this a"; if(selectedLanguage=="de") text__is_this_a ="Ist das eine";
+  var text__all_the="all the";      if(selectedLanguage=="de") text__all_the="alle";
+  var text__unknown_filetypes = "unknow file-types"; if(selectedLanguage=="de") text__unknown_filetypes = "unbekannte Datei-Typen";
+  var text__convert_the_xml_files = "Do you want convert the .xml files?";
+  if(selectedLanguage=="de") text__convert_the_xml_files = "Möchte Sie die .xml Dateien umwandeln?";
+  var text__these_files_were_ignored="These files were ignored";
+  if(selectedLanguage=="de") text__these_files_were_ignored="Diese Dateien wurden ignoriert";
+  var text__aks_about_unknown_files = "Do want to be ask, about every of this unknown files?";
+  if(selectedLanguage=="de") text__aks_about_unknown_files = "Möchte Sie gefragt werden, zu jeder dieser unbekannten Datei?";
+  var text__merge_to_single_phonebook="Merge to a single merged phonebook?"; //\n(only with the same file-format possible)
+  if(selectedLanguage=="de")text__merge_to_single_phonebook="Zusammenfügen zu einen einzelnen Telefonbuch?";
+  
+  counterFiletypes["xml"]   = 0;
+  counterFiletypes["vcf"]   = 0;
+  counterFiletypes["other"] = 0;
+  mergeFiles=false;
+  files_counter = 0;
   document.getElementById('file-input_reset').style.display='block';
   var files = e.target.files;
   if (!files || files.length==0) {
     return;
   }
   document.getElementById('convert_again_file').style.display='block';
-  var text__AskShouldIMerge="Merge to a single merged phonebook?"; //\n(only with the same file-format possible)
-  if(selectedLanguage=="de")text__AskShouldIMerge="Zusammenfügen zu einen einzelnen Telefonbuch?";
-  if(files.length>1 && confirm(text__AskShouldIMerge)) do_a_merge=true;
+  if(files.length>1 && confirm(text__merge_to_single_phonebook)) mergeFiles=true;
+  files_counted = files.length;
   
-  readfiles__files_count = files.length;
+  //first precheck all files.
+  // In case of multiple selected files with different files-types.
+  var ignoredFiles = '';
+  var unknownFiles = '';
+  for(i=0;i<files.length;i++){
+    var file = files[i];
+    var reader = new FileReader();
+    reader.fileName = file.name;
+    var filetype_by_ext = get_filetype_by_ext(reader.fileName).toLowerCase();
+    if( typeof filetype_by_ext === "undefined" ) filetype_by_ext ='';
+    if ( filetype_by_ext!='' || e.target.fileType!='' ){ //fileType no set at this state. ( could be deleted )
+        if( filetype_by_ext=='xml' || e.target.fileType=='application/xml' || e.target.fileType=='text/xml' ) counterFiletypes["xml"]++;
+        else if( filetype_by_ext=='vcf' || e.target.fileType=='text/vcard' || e.target.fileType=='text/x-vcard' || e.target.fileType=='text/directory;profile=vCard' || e.target.fileType=='text/directory' ) counterFiletypes["vcf"]++;
+        else { counterFiletypes["others"]++; unknownFiles+=file.name+" , "}
+    }else { counterFiletypes["others"]++; unknownFiles+=file.name+" , " }
+  }
+  var ignore_unknown_filetypes=false;
+  var type_from__forced_to='';
+  if(files.length>1){
+      var text_a=''; 
+      if(counterFiletypes["xml"]>0) text_a+=text__found+" : "+counterFiletypes["xml"]+" .xml "+text__files+".\n";
+      if(counterFiletypes["vcf"]>0) text_a+=text__found+" : "+counterFiletypes["vcf"]+" .vcf "+text__files+".\n";
+      if(counterFiletypes["others"]>0){
+        let unkF = unknownFiles.substring(0,60);
+        if(unknownFiles.length>60) unkF+=" .... (and more) ";
+        // Ask: should unknown file-types ignored?:
+        if( ! confirm(text_a + text__found+ " : "+ counterFiletypes["others"] +" " + text__unknown_filetypes+": \n"+ unkF +"\n" + text__aks_about_unknown_files) ) ignore_unknown_filetypes=true;
+      }
+      if(counterFiletypes["xml"]>0 && counterFiletypes["vcf"]>0 && mergeFiles){
+         // Ask: what file-type should be converted?:
+         if( confirm(text__convert_the_xml_files) )
+         {      type_from__forced_to='xml'; ignoredFiles+=" "+text__all_the+" .vcf type "+text__files+" , "; }
+         else { type_from__forced_to='vcf'; ignoredFiles+=" "+text__all_the+" .xml type "+text__files+" , "; }
+      }
+  }
+  //reset counter
+  counterFiletypes["xml"]    = 0;
+  counterFiletypes["vcf"]    = 0;
+  counterFiletypes["others"] = 0;
+  
+  
+  
   for(i=0;i<files.length;i++){
       var file = files[i];
       var reader = new FileReader();
@@ -880,6 +943,7 @@ function readMultipleFiles(e) {
           var type_from = '';
           var contents = e.target.result;
           var filename = get_filename(e.target.fileName);
+          var confirm_add=''; if(files_counted>1) confirm_add=filename+"\n";
           var filetype_by_ext = get_filetype_by_ext(filename).toLowerCase();
           if( typeof filetype_by_ext === "undefined" ) filetype_by_ext ='';
           if (document.getElementById('setting__upload__filetype_auto_detect').checked && ( filetype_by_ext!='' || e.target.fileType!='' )  ){
@@ -887,26 +951,46 @@ function readMultipleFiles(e) {
               if( filetype_by_ext=='vcf' || e.target.fileType=='text/vcard' || e.target.fileType=='text/x-vcard' || e.target.fileType=='text/directory;profile=vCard' || e.target.fileType=='text/directory' ) type_from="vcf";
           }
           if(type_from==''){
-            if(      confirm("Is this a .xml file?") ) type_from="xml";
-            else if( confirm("Is this a .vcf file?") ) type_from="vcf";
+            if(ignore_unknown_filetypes)ignoredFiles+=" "+filename+" ,";
+            else if(files_counted>1 || !document.getElementById('setting__upload__filetype_auto_detect').checked) 
+            {
+                //maybe ask for file-type
+                if(      
+                   ( type_from__forced_to=='' || type_from__forced_to=='xml' ) &&
+                   confirm(confirm_add+text__is_this_a+" .xml "+text__file+"?")    ) type_from="xml";
+                else if(
+                   ( type_from__forced_to=='' || type_from__forced_to=='vcf' ) &&
+                   confirm(confirm_add+text__is_this_a+" .vcf "+text__file+"?")    ) type_from="vcf";
+                else ignoredFiles+=" "+filename+" ,";
+            }
           }
-          readfiles__files_counter++;
-          if(type_from==''){ alert("ignore this file"); return; }
+          files_counter++;
+     
+          if(type_from!=''){
 
-          var textfield_id = "phonebook_"+type_from;
+              var textfield_id = "phonebook_"+type_from;
 
-          if(!do_a_merge){ //single file(s)
-              document.getElementById(textfield_id).value = contents;
-              if(type_from=="xml"){ uploaded_file_convert_from='xml'; prepare_and_download( ask__xml_convert_to(filename) , filename);}
-              if(type_from=="vcf"){ uploaded_file_convert_from='vcf'; uploaded_file_convert_to='xml'; prepare_and_download( convert_vcf_to_xml() , filename); }
+              if(!mergeFiles){ //single file(s)
+                  document.getElementById(textfield_id).value = contents;
+                  if(type_from=="xml"){ uploaded_file_convert_from='xml'; prepare_and_download( ask__xml_convert_to(filename) , filename);}
+                  if(type_from=="vcf"){ uploaded_file_convert_from='vcf'; uploaded_file_convert_to='xml'; prepare_and_download( convert_vcf_to_xml() , filename); }
+              }
+              if(mergeFiles){ //merged files: append content
+                if(type_from__forced_to!='' && type_from!=type_from__forced_to){  //nothing to do; //not needed: ignoredFiles+=" "+filename+" ,";
+                }else{
+                  if(counterFiletypes[type_from]==0)  document.getElementById(textfield_id).value= '';
+                  counterFiletypes[type_from]++;
+                  document.getElementById(textfield_id).value = f_merge__appendfile(type_from,document.getElementById(textfield_id).value,contents,filename);
+                }
+              }
+              
           }
-          if(do_a_merge){ //merged files
-            if(f_merge_c[type_from]==0)  document.getElementById(textfield_id).value= '';
-            f_merge_c[type_from]++;
-            document.getElementById(textfield_id).value = f_merge__appendfile(type_from,document.getElementById(textfield_id).value,contents);
-            if(readfiles__files_count==readfiles__files_counter){ //last file
-              filename+="_merged_";
+          if(mergeFiles){
+           if(files_counted==files_counter){ //last file => start convert
+              if(type_from=='')filename='';
+              else filename+="_merged_";
               reader_finish__andDownloadMergedFile(filename);
+              if(ignoredFiles!='') alert(text__these_files_were_ignored+": "+ignoredFiles);
             }
           }
         };
@@ -916,11 +1000,8 @@ function readMultipleFiles(e) {
 }
 
 function reader_finish__andDownloadMergedFile(filename){
-   if(do_a_merge) if(
-     f_merge_c["xml"]>0 && f_merge_c["vcf"]>0 
-     ) { alert("Error: Please only upload files of a one single type (e.g. only .xml files). No mixing allowed."); return; }
-   if(f_merge_c["xml"]>0){ uploaded_file_convert_from='xml'; prepare_and_download( ask__xml_convert_to(filename) , filename);}
-   if(f_merge_c["vcf"]>0){ uploaded_file_convert_from='vcf'; uploaded_file_convert_to='xml'; prepare_and_download( convert_vcf_to_xml() , filename); }
+   if(counterFiletypes["xml"]>0){ uploaded_file_convert_from='xml'; prepare_and_download( ask__xml_convert_to(filename) , filename);}
+   if(counterFiletypes["vcf"]>0){ uploaded_file_convert_from='vcf'; uploaded_file_convert_to='xml'; prepare_and_download( convert_vcf_to_xml() , filename); }
 }
 
 
@@ -1072,7 +1153,13 @@ Other functions:
 <ul>
 <li> It's running in directly your browser. ( No need of installation. No server. No Cloud. Only local Programm-Code. )</li>
 <li> Multiple files can be selected and merge before.</li>
-<li> From .xml to .vcf: create separated multiple .vcf files. These multiple files contains just a single person / contact.
+<li> separated multiple .vcf files can be converted or created. These multiple files contains just a single person / contact.
+  <ul>
+    <li> Single- and Multi-VCard files: Contact-data, which are splited in multiple separated .vcf files are supported. These .vcf files contain per file only a single person / contact.<br>
+      <small>(General computer knowledge: How To select multiple files on any computer system: You can select multiple files by press and hold <kbd>STRG</kbd> while file selection, or work with <kbd>⇧ Shift</kdb> (on first and last file), or with drag'n'drop).</small>
+    </li>
+    <li> Reverse also possible: Convert into multiple splited .vcf files (for each person one file). </li>
+  </ul>
 </li>
 </ul>
  Short adress:
@@ -1093,9 +1180,15 @@ Möglich umzuwandeln ist:
 
 Weitere Funktionen:
 <ul>
-<li> Es läuft direkt im Browser.  ( Es ist keine Installtion nötig. Kein Server. Keine Cloud. Nur lokal ausgeführte Programmcode. )</li>
-<li> Mehrere Dateien auswählen und vorher zusammenfügen: Dateien können vorher zusammengefügt werden.</li>
-<li> Von .xml zu .vcf: Single- und Multi-VCard dateien können erstellt werden. Bei Single-Vcard sind die Kontakt-daten auf mehrere einzelne (getrennte) .vcf Dateien aufgeteilt. Diese .vcf Dateien enthalten also je Datei nur eine einzelne Person / Kontakt.
+<li> Mehrere Dateien auswählen und vorher zusammenfügen lassen: .vcf Dateien können vorher zusammengefügt werden. (beim Datei auswählen <kbd>STRG</kbd> gedrückt halten oder per <kbd>⇧ Shift<small>(auch Umschalttaste genannt)</small></kbd>)</li>
+<li> Es läuft direkt im Browser.  ( Es ist keine Installtion nötig. Kein Server. Keine Cloud. Nur lokal ausgeführter Programmcode. )</li>
+<li> Single- und Multi-VCard dateien: Kontakt-daten, die auf mehrere einzelne (getrennte) .vcf Dateien aufgeteilt sind, werden auch unterstützt (zum konvertieren oder zum erstellen). Diese .vcf Dateien enthalten je Datei nur eine einzelne Person / Kontakt.
+  <ul>
+    <li> Mehrere .vcf Dateien können ausgewählt und zusammengefügt werden (optional).<br>
+      <small>(Allgemeines Computer wissen: Wie man mehrer Dateien an Computer System auswählt: Sie können mehrer Dateien auswählen über das drücken und halten der Taste <kbd>STRG</kbd> beim der Datei auswahl, oder sie arbeiten mit Taste <kbd>⇧ Shift</kdb> (auf der ersten und letzten Datei), oder mit der Funktion drag'n'drop).</small>
+    </li>
+    <li> Umgedreht auch möglich: Also ein Umwandlung in viele getrennt .vcf Dateien, je Person eine Datei. </li>
+  </ul>
 </li>
 </ul>
 </span>
@@ -1117,8 +1210,8 @@ Developer-Portal "github": <a href="https://github.com/soerenj/fritzbox_phoneboo
 <aside>
 <details style="padding-right:4pt;">
  <summary>
-  <span lang="en" class="en">Alternative Services / Tools</span>
-  <span lang="de" class="de">Alternative Dienste / Tools</span>
+  <span lang="en" class="en">Links: Alternative Services / Tools</span>
+  <span lang="de" class="de">Links: Alternative Dienste / Tools</span>
  </summary>
  <h3>Links to alternative Services or Tools</h3>
  <ul>
