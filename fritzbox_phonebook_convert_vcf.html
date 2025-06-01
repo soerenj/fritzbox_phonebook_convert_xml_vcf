@@ -175,7 +175,7 @@
 
 <div id="select_file_vcf_div" class="advanced_view">
 <br>
-<label for="phonebook_vcf">From .VCF File:</label> <input type="button" value="convert: ⇧ vcf to xml" onclick="convert_vcf_to_xml()" />   &nbsp;  <br>
+<label for="phonebook_vcf">From .VCF File:</label> <input type="button" value="convert: ⇧ vcf to xml" onclick="convert_to_xml()" />   &nbsp;  <br>
 <textarea id="phonebook_vcf" autocomplete="off">BEGIN:VCARD
 VERSION:4.0
 N:Person E
@@ -364,8 +364,6 @@ END:VCARD
 <script language="JavaScript">
 <!--
 var last_uploaded_file__fieldid='file-input_auto-detect';
-var uploaded_file_convert_from = '';
-var uploaded_file_convert_to = '';
 var counter_convert = 0;
 var show_advanced_view__state = false;
 var new_phonebook_name = 'convertedPhonebook';
@@ -447,13 +445,13 @@ function show_errors(logError){
 
 }
 
-function convert_to_vcf__maybe_all(filename){ //=vcard
+function convert_to_vcf__maybe_all_vers(filename){ //=vcard
  var selfcall=true;
  if(document.getElementById('setting__xml2vcf__allversions').checked){
      document.getElementById('setting__xml2vcf__version').value="4.0";
-     prepare_and_download( convert_to_vcf(), filename );
+     prepare_and_download( convert_to_vcf(), filename , 'vcf');
      document.getElementById('setting__xml2vcf__version').value="3.0";
-     prepare_and_download( convert_to_vcf(), filename );
+     prepare_and_download( convert_to_vcf(), filename , 'vcf');
      document.getElementById('setting__xml2vcf__version').value="2.1";
      document.getElementById('set_vcf_only_for2.1').style.display='block';
      return convert_to_vcf();
@@ -559,7 +557,7 @@ function convert_to_vcf(multipleDirectDownload=false){ //=vcard
   if(multipleDirectDownload){
     var filen=person
     if(!document.getElementById('setting__xml2vcf__splited__filename_fullname').checked) filen=filen.replace(/([^ \.;,])([^ \.;,])*/g,'$1');
-    prepare_and_download(out,filen);
+    prepare_and_download(out,filen,'vcf');
   }
   outTotal+=out;
  }
@@ -568,7 +566,7 @@ function convert_to_vcf(multipleDirectDownload=false){ //=vcard
  //download('vcf',out);
 }
 
-function convert_vcf_to_xml(){
+function convert_to_xml(){
   //config
  var vcf_use_which_name = 'FN'; // F or FN 
 
@@ -727,44 +725,43 @@ function get_filename(filename_with_path) {
 }
 
 function download_one_file_ask(){
-  if (confirm('Download text in .xml window?')) { uploaded_file_convert_to='xml'; prepare_and_download(document.getElementById('phonebook_xml').value); return; }
-  if (confirm('Download text in .vcf window?')) { uploaded_file_convert_to='vcf'; prepare_and_download(document.getElementById('phonebook_vcf').value); return; }
+  if (confirm('Download text in .xml window?')) { prepare_and_download(document.getElementById('phonebook_xml').value,'','xml'); return; }
+  if (confirm('Download text in .vcf window?')) { prepare_and_download(document.getElementById('phonebook_vcf').value,'','vcf'); return; }
 }
-function prepare_and_download(text,filename) {
+function prepare_and_download(text,filename,outType) {
   if(text==undefined || text==null || text==false || text==""){ alert("Finish. End. No Output. Nothing to output."); return;}
   if(filename == undefined || filename=='') filename='';
   if(filename=='') filename='phonebook_for_fritzbox';
-  if(uploaded_file_convert_to=='xml'){
+  if(outType=='xml'){
    filename = filename.replace(/(\.)(vcf)$/i,'_$2');
    filename += "_converted_.xml";
   }
-  if(uploaded_file_convert_to=='vcf'){
+  if(outType=='vcf'){
    if(filename!='')filename = filename.replace(/(\.)(xml)$/i,'_$2');
    if(document.getElementById('setting__xml2vcf__allversions').checked) filename += '_v'+document.getElementById('setting__xml2vcf__version').value.replace(/\./,'-')+'_';
-   filename += "_converted_."+uploaded_file_convert_to;
+   filename += "_converted_."+outType;
   }
   counter_convert++;
-  downloadAction(filename, text);
+  downloadAction(filename, text, outType);
 }
 function download_sourcecode(){
   var filename = '';
   var text = document.getElementsByTagName('html')[0].outerHTML;
-  uploaded_file_convert_to='html'
   var filename_add = '';
   if (typeof document.querySelector !== "undefined") { 
       var jsonld = JSON.parse(document.querySelector('script[type="application/ld+json"]').innerText);
       if (typeof jsonld !== "undefined" && jsonld.softwareVersion !== "undefined" && jsonld.dateModified !== "undefined" ) filename_add = " v"+jsonld.softwareVersion.replace(/\./,'-')+" "+jsonld.dateModified.replace(/\./,'-');
   }
-  filename = 'converter phonebook fritzboxxml vcf vcard '+filename_add+'.'+uploaded_file_convert_to;
+  filename = 'converter phonebook fritzboxxml vcf vcard '+filename_add+'.html';
   text="<!DOCTYPE html>"+text;
-  downloadAction(filename,text);
+  downloadAction(filename,text,'html');
 }
-function downloadAction(filename, text) {
+function downloadAction(filename, text, outType) {
   if(text==undefined || text=="undefined" || text==false || text==""){alert("Error");return;}
   var element = document.createElement('a');
-  if     (uploaded_file_convert_to=='vcf') element.setAttribute('href', 'data:text/vcard;charset=utf-8,'      + encodeURIComponent(text));
-  else if(uploaded_file_convert_to=='xml') element.setAttribute('href', 'data:application/xml;charset=utf-8,' + encodeURIComponent(text));
-  else if(uploaded_file_convert_to=='html')element.setAttribute('href', 'data:text/html;charset=utf-8,'       + encodeURIComponent(text));
+  if     (outType=='vcf') element.setAttribute('href', 'data:text/vcard;charset=utf-8,'      + encodeURIComponent(text));
+  else if(outType=='xml') element.setAttribute('href', 'data:application/xml;charset=utf-8,' + encodeURIComponent(text));
+  else if(outType=='html')element.setAttribute('href', 'data:text/html;charset=utf-8,'       + encodeURIComponent(text));
   else                                     element.setAttribute('href', 'data:text/plain;charset=utf-8,'      + encodeURIComponent(text));
   element.setAttribute('download', filename);
 
@@ -781,7 +778,7 @@ function downloadAction(filename, text) {
   //window.setTimeout("document.getElementById('ready').style.display='none';",10000);
   document.getElementById('ready_note_export_to_vcf_multivcard').style.display='none';
   document.getElementById('ready_note_export_to_vcf_allversions').style.display='none';
-    if(uploaded_file_convert_to=='vcf'){
+    if(outType=='vcf'){
       document.getElementById('ready_note_export_to_vcf_multivcard').style.display='block';
       if(document.getElementById('setting__xml2vcf__allversions').checked)
         document.getElementById('ready_note_export_to_vcf_allversions').style.display='block';
@@ -823,10 +820,6 @@ function get_filetype_by_ext(filename){
   var filetype_by_ext = '';
   if (t.length>0) filetype_by_ext = t[t.length-1];
   return filetype_by_ext;
-}
-
-function ask__xml_convert_to(filename) {
-  uploaded_file_convert_to='vcf'; return convert_to_vcf__maybe_all(filename);
 }
 
 function f_merge__appendfile(format,origin,add,filename){
@@ -972,8 +965,8 @@ function readMultipleFiles(e) {
 
               if(!mergeFiles){ //single file(s)
                   document.getElementById(textfield_id).value = contents;
-                  if(type_from=="xml"){ uploaded_file_convert_from='xml'; prepare_and_download( ask__xml_convert_to(filename) , filename);}
-                  if(type_from=="vcf"){ uploaded_file_convert_from='vcf'; uploaded_file_convert_to='xml'; prepare_and_download( convert_vcf_to_xml() , filename); }
+                  if(type_from=="xml") prepare_and_download( convert_to_vcf__maybe_all_vers(filename) , filename , 'vcf');
+                  if(type_from=="vcf") prepare_and_download( convert_to_xml() , filename , 'xml');
               }
               if(mergeFiles){ //merged files: append content
                 if(type_from__forced_to!='' && type_from!=type_from__forced_to){  //nothing to do; //not needed: ignoredFiles+=" "+filename+" ,";
@@ -1000,8 +993,8 @@ function readMultipleFiles(e) {
 }
 
 function reader_finish__andDownloadMergedFile(filename){
-   if(counterFiletypes["xml"]>0){ uploaded_file_convert_from='xml'; prepare_and_download( ask__xml_convert_to(filename) , filename);}
-   if(counterFiletypes["vcf"]>0){ uploaded_file_convert_from='vcf'; uploaded_file_convert_to='xml'; prepare_and_download( convert_vcf_to_xml() , filename); }
+   if(counterFiletypes["xml"]>0) prepare_and_download( convert_to_vcf__maybe_all_vers(filename) , filename , 'vcf');
+   if(counterFiletypes["vcf"]>0) prepare_and_download( convert_to_xml() , filename , 'xml');
 }
 
 
