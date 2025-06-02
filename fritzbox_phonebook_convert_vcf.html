@@ -40,7 +40,7 @@
 	"description": "convert phonebook files from router Fritzbox .xml to .vcf (vcard) and backwards",
 	"programmingLanguage": "javascript",
 	"dateModified": "2025-06-02",
-	"softwareVersion": "0.32",
+	"softwareVersion": "0.321",
 	"inLanguage": ["en", "de"],
     "mainEntityOfPage":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
 	"url":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
@@ -51,7 +51,7 @@
 </script>
 <!--
  /*
- * version: 0.32
+ * version: 0.321
  * date: 2025-06-02
  *
  * Licence 
@@ -576,9 +576,9 @@ function convert_to_vcf(multipleDirectDownload=false){ //=vcard
   //name
   tmp = person.replace('\n','');
   if(uri_encode  && v=="2.1")tmp = encodeURI(tmp).replace(/%/g,'=');
-  if(add_charset && v=="2.1")tmp = ";CHARSET=UTF-8:"+tmp;
-  out += 'N:' +tmp+'\n';
-  out += 'FN:'+tmp+'\n';
+  if(add_charset && v=="2.1")tmp = ";CHARSET=UTF-8:"+tmp; else tmp = ":"+tmp;
+  out += 'N' +tmp+'\n';
+  out += 'FN'+tmp+'\n';
   
   //phone
   for(j=0;j<telephony.length;j++){
