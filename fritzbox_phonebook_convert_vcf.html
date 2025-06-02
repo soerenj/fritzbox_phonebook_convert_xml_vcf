@@ -40,7 +40,7 @@
 	"description": "convert phonebook files from router Fritzbox .xml to .vcf (vcard) and backwards",
 	"programmingLanguage": "javascript",
 	"dateModified": "2025-06-02",
-	"softwareVersion": "0.312",
+	"softwareVersion": "0.32",
 	"inLanguage": ["en", "de"],
     "mainEntityOfPage":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
 	"url":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
@@ -51,7 +51,7 @@
 </script>
 <!--
  /*
- * version: 0.312
+ * version: 0.32
  * date: 2025-06-02
  *
  * Licence 
@@ -107,7 +107,7 @@ input + label {vertical-align:top; }
 </header>
 <noscript style="color:red">You need JavaScript, to use this service.</noscript>
 
-<div id="select_file_auto-detect_div">
+<div id="container_file-input_auto-detect">
 <!--
 <span lang="en" class="en">Select &nbsp;- or -&nbsp; drag & drop file(s): </span>
 <span lang="de" class="de">Auswählen &nbsp;- oder -&nbsp; hier reinziehen von Datei(en) <span style="color:#999;">("drag & drop")</span>:</span>
@@ -117,19 +117,36 @@ input + label {vertical-align:top; }
 <span id="file-input_auto-detect_text_drophere" style="display:none">Drop your file here</span>
 <input type="file" multiple id="file-input_auto-detect" autocomplete="off" style="display:none" /><a href="#" id="file-input_auto-detect_close_button" style="display:none;background: white;  font-size: 2em;  text-align: right;  top: 10%;  position: absolute;  padding: 0.5em;  right: 10%; border-radius:20pt;" onClick="unhighlight();return false;" class="maybebutton">Close 🗙</a><br>
 </div>
-<p>
+<p id="container_file-input_xml">
 <label for="file-input_xml" id="label_file-input_xml">
  <span lang="en" class="en">Your .xml file:</span>
  <span lang="de" class="de">Ihre .xml Datei:</span>
 </label>
 <input type="file" multiple id="file-input_xml" autocomplete="off" /></p>
-<p> <span lang="en" class="en"> - or - </span><span lang="de" class="de"> - oder - </span> </p>
-<p>
+<p id="container_f_text_or"> <span lang="en" class="en"> - or - </span><span lang="de" class="de"> - oder - </span> </p>
+<p id="container_file-input_format2">
 <label for="file-input_format2" id="label_file-input_format2">
  <span lang="en" class="en">Your .vcf file:</span>
  <span lang="de" class="de">Ihre .vcf Datei:</span>
 </label>
 <input type="file" multiple id="file-input_format2" autocomplete="off" />
+</p>
+<p id="container_file-input_folder" style="display:none">
+<label for="file-input_format2" id="label_file-input_folder">
+ <span lang="en" class="en">Your Folder <span style="color:#999">(with .vcf or .xml files)</span>:</span>
+ <span lang="de" class="de">Ihr Ordner <span style="color:#999">(mit .vcf oder .xml Dateien)</span>:</span>
+</label>
+<input type="file" multiple id="file-input_folder" autocomplete="off" webkitdirectory />
+</p>
+<p>
+<a href="#" onClick="toogle_folder_file_select_mode(true);return false;" id="link_file-input_folder__selectafolder" class="maybebutton">
+ <span lang="en" class="en">Folder-select <small style="color:#999">(for lots of .vcf files)</small></span>
+ <span lang="de" class="de">Ordner-Auswahl <small style="color:#999">(für vielen .vcf Dateien)</small></span>
+</a>
+<a href="#" onClick="toogle_folder_file_select_mode(false);return false;"  id="link_file-input_folder__backtofiles" style="display:none" class="maybebutton">
+ <span lang="en" class="en">🗙 disable folder-select</span>
+ <span lang="de" class="de">🗙 deaktvieren Ordner-Auswahl</span>
+</a>
 </p>
 </br>
 <br>
@@ -425,7 +442,8 @@ if(detected_default_langcountrycode!='')e.value=detected_default_langcountrycode
 
 if(document.getElementById('file-input_auto-detect').value!='' ||
    document.getElementById('file-input_xml').value!='' ||
-   document.getElementById('file-input_format2').value!='')document.getElementById('file-input_reset').style.display='block';
+   document.getElementById('file-input_format2').value!=''||
+   document.getElementById('file-input_folder').value!='')document.getElementById('file-input_reset').style.display='block';
 document.getElementById('new_phonebook_name').value=new_phonebook_name;
 var file_upload__accepted_filetype = ".vcf,.xml,.vcard,.text/vcard,text/x-vcard,text/directory;profile=vCard,text/directory,application/xml,text/xml";
 var file_upload__accepted_filetype__xml = ".xml,application/xml,text/xml";
@@ -435,12 +453,41 @@ e = document.getElementById('file-input_auto-detect'); if(e.accept!=undefined)e.
 e = document.getElementById('file-input_xml'); if(e.accept!=undefined)e.accept=file_upload__accepted_filetype__xml;
 e = document.getElementById('file-input_format2'); if(e.accept!=undefined)e.accept=file_upload__accepted_filetype__format2;
 
+function toogle_folder_file_select_mode(folderMode){
+ var linktext_selectafolder=document.getElementById('link_file-input_folder__selectafolder');
+ var linktext_backtofiles  =document.getElementById('link_file-input_folder__backtofiles');
+ if(folderMode){
+  linktext_selectafolder.style.display='none';
+  linktext_backtofiles.style.display='';
+ }else{
+  linktext_selectafolder.style.display='';
+  linktext_backtofiles.style.display='none';
+ }
+ var e=document.getElementsByTagName('input'); //for drag'n'drop
+ for(let i=0;i<e.length;i++){
+   if(e[i].getAttribute('type')!='file')continue;
+   if(folderMode) e[i].setAttribute('webkitdirectory','webkitdirectory');
+   else           e[i].removeAttribute('webkitdirectory','');
+ }
+ var d=''
+ if(folderMode)d='none';
+ if(document.getElementById('file-input_auto-detect').value=='')document.getElementById('container_file-input_auto-detect').style.display='none';
+ document.getElementById('container_file-input_xml').style.display=d;
+ document.getElementById('container_file-input_format2').style.display=d;
+ document.getElementById('container_f_text_or').style.display=d;
+ if(!folderMode)d='none'; else d='';
+ document.getElementById('container_file-input_folder').style.display=d;
+ 
+ if(folderMode) document.getElementById("file-input_folder").click();
+}
+
 function reset_to_default(){
  document.getElementById('phonebook_xml').value = document.getElementById('phonebook_xml').defaultValue;
  document.getElementById('phonebook_vcf').value = document.getElementById('phonebook_vcf').defaultValue;
  document.getElementById('file-input_auto-detect').value='';
  document.getElementById('file-input_xml').value='';
  document.getElementById('file-input_format2').value='';
+ document.getElementById('file-input_folder').value='';
  document.getElementById('ready').style.display="none";
 }
 
@@ -934,15 +981,21 @@ function readMultipleFiles(e) {
   
   
   var counter__merged_append=0;
+  var foldername = '';
   for(i=0;i<files.length;i++){
       var file = files[i];
       var reader = new FileReader();
-      if(e.target.id=='file-input_auto-detect' || e.target.id=='file-input_xml' || e.target.id=='file-input_format2'){
+      if(e.target.id=='file-input_auto-detect' || e.target.id=='file-input_xml' || e.target.id=='file-input_format2' || e.target.id=='file-input_folder'){
         last_uploaded_file__fieldid = e.target.id;
         if(e.target.id=='file-input_auto-detect') document.getElementById('file-input_auto-detect').style.display='block';
         else document.getElementById('file-input_auto-detect').style.display='none';
         reader.fileName = file.name;
         reader.fileType = file['type'];
+        if(mergeFiles && file.webkitRelativePath!=undefined){
+           var p = file.webkitRelativePath;
+           foldername = p.substring(0, p.search(/[\/\\]/) );
+           if(foldername=='')foldername='folder';
+        } else foldername='';
         reader.onload = function(e) {
           var type_from = '';
           var contents = e.target.result;
@@ -993,6 +1046,7 @@ function readMultipleFiles(e) {
            if(files_counted==files_counter){ //last file => start convert
               if(type_from=='')filename='';
               else filename+="_merged_";
+              if(foldername!='') filename=foldername+"_merged_";
               if(type_from__forced_to=="xml" || (type_from__forced_to=='' && type_from=="xml") )
                  prepare_and_download( convert_to_vcf__maybe_all_vers(filename) , filename , 'vcf');
               if(type_from__forced_to=="vcf" || (type_from__forced_to=='' && type_from=="vcf") )
@@ -1011,6 +1065,8 @@ document.getElementById('file-input_auto-detect')
 document.getElementById('file-input_xml')
   .addEventListener('change', readMultipleFiles, false);
 document.getElementById('file-input_format2')
+  .addEventListener('change', readMultipleFiles, false);
+document.getElementById('file-input_folder')
   .addEventListener('change', readMultipleFiles, false);
 
 //document.getElementById('file-input_auto-detect').value='';
@@ -1034,7 +1090,8 @@ function show_advanced_view(state){
    document.getElementById("show_advanced_view_link_link_close").style.display='none';
    if(document.getElementById('file-input_auto-detect').value!='' || 
       document.getElementById('file-input_xml').value!='' || 
-      document.getElementById('file-input_format2').value!='') document.getElementById('file-input_reset').style.display='block';
+      document.getElementById('file-input_format2').value!=''|| 
+      document.getElementById('file-input_folder').value!='') document.getElementById('file-input_reset').style.display='block';
  }
 }
 
