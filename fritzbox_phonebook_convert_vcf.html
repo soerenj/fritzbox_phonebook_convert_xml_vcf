@@ -536,7 +536,11 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
  parser = new DOMParser();
  xmlDoc = parser.parseFromString(text, "text/xml");
 
- if(multipleDirectDownloadZip) var z = new Zip('converted_phonebook_vcf_v'+v.replace(/\./,'-'));
+ if(multipleDirectDownloadZip){
+   var zFilen = "converted_phonebook_vcf";
+   if(foldername!='') zFilen = foldername+"_converted";
+   var z = new Zip(zFilen+'_v'+v.replace(/\./,'-'));
+ }
 
  var out, outTotal, contacts, contact, person, telephony, telefone_numbers, telefone_numbers_type, telefone_numbers_prio, phone, tmp;
  out = ''; outTotal=''; logError=[];
@@ -918,6 +922,7 @@ function f_merge__appendfile(format,origin,add,filename){
 var mergeFiles = false;
 var files_counted = 0;
 var files_counter = 0;
+var foldername = '';
   
 function readMultipleFiles(e) {
   //translation
@@ -993,7 +998,7 @@ function readMultipleFiles(e) {
   
   
   var counter__merged_append=0;
-  var foldername = '';
+  foldername = '';
   for(i=0;i<files.length;i++){
       var file = files[i];
       var reader = new FileReader();
