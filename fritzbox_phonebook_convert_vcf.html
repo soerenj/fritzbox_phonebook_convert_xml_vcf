@@ -39,8 +39,8 @@
 	"name": "convert phonebook Fritzbox",
 	"description": "convert phonebook files from router Fritzbox .xml to .vcf (vcard) and backwards",
 	"programmingLanguage": "javascript",
-	"dateModified": "2025-06-02",
-	"softwareVersion": "0.321",
+	"dateModified": "2025-06-03",
+	"softwareVersion": "0.33",
 	"inLanguage": ["en", "de"],
     "mainEntityOfPage":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
 	"url":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
@@ -51,8 +51,8 @@
 </script>
 <!--
  /*
- * version: 0.321
- * date: 2025-06-02
+ * version: 0.33
+ * date: 2025-06-03
  *
  * Licence 
  *
@@ -157,12 +157,12 @@ input + label {vertical-align:top; }
 </div>
 
 <div id="ready_note_export_to_vcf_multivcard" style="margin-top:5pt;display:none;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
- <span lang="en" class="en">Please Note: <u>Multi-Vcard file:</u><br> This is a Multi-Vcard file. It have all contacts in one single file. Some Programs does not support this. <br>Split file: If you need a vcard-file per each Person: <a href="#" onclick="convert_to_vcf(true);return false;">Split in <span id="ready_note_export_to_vcf_multivcard__counter_splited1">X</span> separated Single-VCard-files<a/>.<br> Alternativ: please try this other tool: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
- <span lang="de" class="de">Information: <u>Multi-Vcard Datei:</u><br> Die ist eine Multi-Vcard Datei. Sie enthält alle Kontakte in einer Datei. Manche Programme unterstützen dies nicht. <br>Aufteilen: Wenn sie je Person eine einzelne Vcard-Datei benötigen: <a href="#" onclick="convert_to_vcf(true);return false;">Aufteilen in <span id="ready_note_export_to_vcf_multivcard__counter_splited2">X</span> verschiedene Single-VCard-Dateien<a/>.<br> Alternativ: Bitte eine anderes Tool verwenden: z.B.: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
+ <span lang="en" class="en">Please Note: <p><u>Multi-Vcard file:</u><br> This is a Multi-Vcard file. It have all contacts in one single file. Some Programs does not support this. </p><p><u>Single-Vcard-files:</u><br> Split in <span id="ready_note_export_to_vcf_multivcard__counter_splited1">X</span> separated files. A single vcard-file for each Person. <ul><li><a href="#" onclick="convert_to_vcf(true,true);return false;">Create a .zip file with all the single Vcard files<a/></li><li><a href="#" onclick="convert_to_vcf(true);return false;">Create all the single files directly (not recommended)<a/></li></ul></p> Alternativ: please try this other tool: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
+ <span lang="de" class="de">Information: <p><u>Multi-Vcard Datei:</u><br> Dies ist eine Multi-Vcard Datei, die erstellt wurde. Sie enthält alle Kontakte in einer Datei. Manche Programme unterstützen dies nicht. </p><p><u>Single-Vcard-Dateien:</u><br> Aufteilen in <span id="ready_note_export_to_vcf_multivcard__counter_splited2">X</span> Dateien. Je Person wird eine einzelne Vcard-Datei erstellt. <ul><li><a href="#" onclick="convert_to_vcf(true,true);return false;">Erstelle eine .zip Datei mit allen einzel VCard-Dateien<a/></li><li> <a href="#" onclick="convert_to_vcf(true);return false;">Erstelle alle Einzel-Dateien direkt (nicht empfohlen)<a/></li></ul> </p>Alternativ: Bitte eine anderes Tool verwenden: z.B.: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
 </div>
 <div id="ready_note_export_to_vcf_allversions" style="margin-top:5pt;display:none;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
- <span lang="en" class="en">Please Note: <u>VCard Versions</u>:<br>There were three files created. There have different vcard Version (v2.1 , v3.0 , v4.0). Which file you need may depends on your target.</span>
- <span lang="de" class="de">Information: <u>VCard Versionen</u>:<br>Es wurden drei Dateien erstellt. Es sind verschiedene vcard Versionen (v2.1 , v3.0 , v4.0). Welche Datei Sie benötigen, kommt auf ihr Ziel-Programm an.</span>
+ <span lang="en" class="en">Please Note: <p><u>VCard Versions</u>:<br>There were three files created. There have different vcard Version: v2.1 , v3.0 , v4.0. Which file you need may depends on your target.</p></span>
+ <span lang="de" class="de">Information: <p><u>VCard Versionen</u>:<br>Es wurden drei Dateien erstellt. Es sind verschiedene vcard Versionen: v2.1 , v3.0 , v4.0. Welche Datei Sie benötigen, kommt auf ihr Ziel-Programm an.</p></span>
 </div>
 
 <p id="show_advanced_view_link_link_close" style="display:none">
@@ -525,7 +525,7 @@ function convert_to_vcf__maybe_all_vers(filename){ //=vcard
  }else convert_to_vcf();
 }
 
-function convert_to_vcf(multipleDirectDownload=false){ //=vcard
+function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=false){ //=vcard
  var v = document.getElementById('setting__xml2vcf__version').value; //v=Version 2.1|3.0|4.0
  var uri_encode = document.getElementById('setting__xml2vcf__uri_encode').checked;
  var add_charset = document.getElementById('setting__xml2vcf__add_charset').checked;
@@ -536,12 +536,14 @@ function convert_to_vcf(multipleDirectDownload=false){ //=vcard
  parser = new DOMParser();
  xmlDoc = parser.parseFromString(text, "text/xml");
 
+ if(multipleDirectDownloadZip) var z = new Zip('converted_phonebook_vcf_v'+v.replace(/\./,'-'));
+
  var out, outTotal, contacts, contact, person, telephony, telefone_numbers, telefone_numbers_type, telefone_numbers_prio, phone, tmp;
  out = ''; outTotal=''; logError=[];
  var contacts = xmlDoc.getElementsByTagName("contact");
  document.getElementById('ready_note_export_to_vcf_multivcard__counter_splited1').innerText=contacts.length;
  document.getElementById('ready_note_export_to_vcf_multivcard__counter_splited2').innerText=contacts.length;
- if(multipleDirectDownload==true){
+ if(multipleDirectDownload){
    var text__AskMultipleVcf="It will be created and downloaded lots of files: \ncounted: "+contacts.length+" files.\nDo you want really want continue??";
    if(selectedLanguage=="de")text__AskMultipleVcf="Es werden gleiche (sehr) vielen Dateien erstellt und runtergeladen: \n"+contacts.length+" Stück. \nMöchten Sie fortfahren?";
    var text__AskMultipleVcf_name="Filename example (look in settings):\nPerson-Name: Max Muster\nFile-name: ";
@@ -553,7 +555,8 @@ function convert_to_vcf(multipleDirectDownload=false){ //=vcard
      if(selectedLanguage!="de")text__AskMultipleVcf_version+="\nIt is not possible to export in all vcard-version in this step.";
      if(selectedLanguage=="de")text__AskMultipleVcf_version+="\nEs ist nicht möglich in alle Vcard-Versionen gleichzeitig zu exportieren.";
    }
-   if(!confirm(text__AskMultipleVcf) || !confirm(text__AskMultipleVcf_name)) return ""; //multipleDirectDownload=false;
+   if(!multipleDirectDownloadZip) if(!confirm(text__AskMultipleVcf) ) return ""; //multipleDirectDownload=false;
+   if(!confirm(text__AskMultipleVcf_name)) return ""; //multipleDirectDownload=false;
    if(text__AskMultipleVcf_version!='' && !confirm(text__AskMultipleVcf_version)) return "";
  }
  for(i=0;i<contacts.length;i++)
@@ -624,11 +627,13 @@ function convert_to_vcf(multipleDirectDownload=false){ //=vcard
   if(multipleDirectDownload){
     var filen=person
     if(!document.getElementById('setting__xml2vcf__splited__filename_fullname').checked) filen=filen.replace(/([^ \.;,])([^ \.;,])*/g,'$1');
-    prepare_and_download(out,filen,'vcf');
+    if(multipleDirectDownloadZip) z.str2zip(filen+"_vcard"+v.replace(/\./,'-')+".vcf", out, '');
+    else prepare_and_download(out,filen,'vcf');
   }
   outTotal+=out;
  }
  document.getElementById('phonebook_vcf').value = outTotal;
+ if(multipleDirectDownloadZip) z.makeZip();
  return out;
  //download('vcf',out);
 }
@@ -930,11 +935,14 @@ function readMultipleFiles(e) {
   if(selectedLanguage=="de") text__aks_about_unknown_files = "Möchte Sie gefragt werden, zu jeder dieser unbekannten Datei?";
   var text__merge_to_single_phonebook="Merge to a single merged phonebook?"; //\n(only with the same file-format possible)
   if(selectedLanguage=="de")text__merge_to_single_phonebook="Zusammenfügen zu einen einzelnen Telefonbuch?";
+  //inactiv:changedToAskLaterForZip //var text__export_as_zip="Export as splited Single VCard for each single Person. And put them all in a .zip file?";
+  //inactiv:changedToAskLaterForZip //if(selectedLanguage=="de") text__export_as_zip="Exportiere als geteilte einzel VCard für jede einzelne Person. Und diese dann in eine .zip Datei?";
   
   var counterFiletypes = Array();
   counterFiletypes["xml"]   = 0;
   counterFiletypes["vcf"]   = 0;
   counterFiletypes["other"] = 0;
+  //inactiv:changedToAskLaterForZip //export_as_zip=false;
   mergeFiles=false;
   files_counter = 0;
   document.getElementById('file-input_reset').style.display='block';
@@ -978,6 +986,9 @@ function readMultipleFiles(e) {
          {      type_from__forced_to='xml'; ignoredFiles+=" "+text__all_the+" .vcf type "+text__files+" , "; }
          else { type_from__forced_to='vcf'; ignoredFiles+=" "+text__all_the+" .xml type "+text__files+" , "; }
       }
+
+      //inactiv:changedToAskLaterForZip //if( type_from__forced_to=="xml" || ( type_from__forced_to=='' && counterFiletypes["xml"]>0 ) )
+      //inactiv:changedToAskLaterForZip //if (confirm(text__export_as_zip))export_as_zip=true;
   }
   
   
@@ -1048,6 +1059,7 @@ function readMultipleFiles(e) {
               if(type_from=='')filename='';
               else filename+="_merged_";
               if(foldername!='') filename=foldername+"_merged_";
+              //inactiv:changedToAskLaterForZip // inside of next if: //if(export_as_zip) convert_to_vcf(true,true); else ...prepare_and_download...
               if(type_from__forced_to=="xml" || (type_from__forced_to=='' && type_from=="xml") )
                  prepare_and_download( convert_to_vcf__maybe_all_vers(filename) , filename , 'vcf');
               if(type_from__forced_to=="vcf" || (type_from__forced_to=='' && type_from=="vcf") )
@@ -1212,12 +1224,12 @@ Other functions:
 <ul>
 <li> It's running in directly your browser. ( No need of installation. No server. No Cloud. Only local Programm-Code. )</li>
 <li> Multiple files can be selected and merge before.</li>
-<li> separated multiple .vcf files can be converted or created. These multiple files contains just a single person / contact.
+<li> separated multiple .vcf files can be converted or created. These multiple files can contains just a single person / contact.
   <ul>
     <li> Single- and Multi-VCard files: Contact-data, which are splited in multiple separated .vcf files are supported. These .vcf files contain per file only a single person / contact.<br>
       <small>(General computer knowledge: How To select multiple files on any computer system: You can select multiple files by press and hold <kbd>STRG</kbd> while file selection, or work with <kbd>⇧ Shift</kdb> (on first and last file), or with drag'n'drop).</small>
     </li>
-    <li> Reverse also possible: Convert into multiple splited .vcf files (for each person one file). </li>
+    <li> Reverse also possible: Convert into multiple splited .vcf files: for each single person one single .vcf file. <br> These (lots of) files can be created directly - or - put all in a .zip file.</li>
   </ul>
 </li>
 </ul>
@@ -1246,7 +1258,7 @@ Weitere Funktionen:
     <li> Mehrere .vcf Dateien können ausgewählt und zusammengefügt werden (optional).<br>
       <small>(Allgemeines Computer wissen: Wie man mehrer Dateien an Computer System auswählt: Sie können mehrer Dateien auswählen über das drücken und halten der Taste <kbd>STRG</kbd> beim der Datei auswahl, oder sie arbeiten mit Taste <kbd>⇧ Shift</kdb> (auf der ersten und letzten Datei), oder mit der Funktion drag'n'drop).</small>
     </li>
-    <li> Umgedreht auch möglich: Also ein Umwandlung in viele getrennt .vcf Dateien, je Person eine Datei. </li>
+    <li> Umgedreht auch möglich: Also ein Umwandlung in viele getrennt einzel .vcf Dateien, je Person eine einzelne Datei. <br> Diese (sehr vielen) Dateien können direkt erstellt werden - oder - in eine .zip Datei gepackt werden </li>
   </ul>
 </li>
 </ul>
