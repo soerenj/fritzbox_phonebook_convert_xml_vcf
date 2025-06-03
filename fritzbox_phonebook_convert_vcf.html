@@ -157,8 +157,8 @@ input + label {vertical-align:top; }
 </div>
 
 <div id="ready_note_export_to_vcf_multivcard" style="margin-top:5pt;display:none;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
- <span lang="en" class="en">Please Note: <p><u>Multi-Vcard file:</u><br> This is a Multi-Vcard file. It have all contacts in one single file. Some Programs does not support this. </p><p><u>Single-Vcard-files:</u><br> Split in <span id="ready_note_export_to_vcf_multivcard__counter_splited1">X</span> separated files. A single vcard-file for each Person. <ul><li><a href="#" onclick="convert_to_vcf(true,true);return false;">Create a .zip file with all the single Vcard files<a/></li><li><a href="#" onclick="convert_to_vcf(true);return false;">Create all the single files directly (not recommended)<a/></li></ul></p> Alternativ: please try this other tool: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
- <span lang="de" class="de">Information: <p><u>Multi-Vcard Datei:</u><br> Dies ist eine Multi-Vcard Datei, die erstellt wurde. Sie enthält alle Kontakte in einer Datei. Manche Programme unterstützen dies nicht. </p><p><u>Single-Vcard-Dateien:</u><br> Aufteilen in <span id="ready_note_export_to_vcf_multivcard__counter_splited2">X</span> Dateien. Je Person wird eine einzelne Vcard-Datei erstellt. <ul><li><a href="#" onclick="convert_to_vcf(true,true);return false;">Erstelle eine .zip Datei mit allen einzel VCard-Dateien<a/></li><li> <a href="#" onclick="convert_to_vcf(true);return false;">Erstelle alle Einzel-Dateien direkt (nicht empfohlen)<a/></li></ul> </p>Alternativ: Bitte eine anderes Tool verwenden: z.B.: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
+ <span lang="en" class="en">Please Note: <p><u>Multi-Vcard file:</u><br> This is a Multi-Vcard file. It have all contacts in one single file. Some Programs does not support this. </p><p>Alternativ: <u>Vcard-file cur / separated for each single person:</u><br> Split in <span id="ready_note_export_to_vcf_multivcard__counter_splited1">X</span> separated files. A single vcard-file for each Person. <ul><li><a href="#" onclick="convert_to_vcf(true,true);return false;">Create a .zip file with all the single Vcard files<a/></li><li><a href="#" onclick="convert_to_vcf(true);return false;">Download all the single files directly (not recommended ; lots of files)<a/></li></ul></p> Alternativ: please try this other tool: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
+ <span lang="de" class="de">Information: <p><u>Multi-Vcard Datei:</u><br> Dies ist eine Multi-Vcard Datei, die erstellt wurde. Sie enthält alle Kontakte in einer Datei. Manche Programme unterstützen dies nicht. </p><p>Alternativ: <u>Vcard-Dateie aufgespalten für jeden einzelnen Kontakt:</u><br> Aufteilen in <span id="ready_note_export_to_vcf_multivcard__counter_splited2">X</span> Dateien. Je Person wird eine einzelne Vcard-Datei erstellt. <ul><li><a href="#" onclick="convert_to_vcf(true,true);return false;">Erstelle eine .zip Datei mit allen einzel VCard-Dateien<a/></li><li> <a href="#" onclick="convert_to_vcf(true);return false;">Download alle Einzel-Dateien direkt (nicht empfohlen ; viele Dateien)<a/></li></ul> </p>Alternativ: Bitte eine anderes Tool verwenden: z.B.: <a href="https://blog.rillke.com/fritzXML2vcard/">https://blog.rillke.com/fritzXML2vcard/</a></span>
 </div>
 <div id="ready_note_export_to_vcf_allversions" style="margin-top:5pt;display:none;margin-left: 50pt;background: #ddd;padding: 10pt;border-radius: 5pt;">
  <span lang="en" class="en">Please Note: <p><u>VCard Versions</u>:<br>There were three files created. There have different vcard Version: v2.1 , v3.0 , v4.0. Which file you need may depends on your target.</p></span>
@@ -343,13 +343,25 @@ END:VCARD
       <span lang="de" class="de">Email</span>
     </label>
     </p>
-    <span lang="en" class="en">At splited (=separated) files Export (=for each single contact will be a single file created): </span>
-    <span lang="de" class="de">Bei geteilte dateien export (=für jeden einzelne Kontakt wird eine einzelne Datei erstellt): </span>
+    <fieldset>
+      <legend>
+          <span lang="en" class="en">splited (=separated single Vcard) : </span>
+    <span lang="de" class="de">geteilte (in je person vcard dateien) : </span>
+    
+      </legend>
+    <span lang="en" class="en" style="color:#999">(splited single vcard have for each single contact a single .vcf file) </span>
+    <span lang="de" class="de" style="color:#999">(geteilte single vcard haben für jeden einzelne Kontakt eine einzelne .vcf Datei) </span>
+    <br>
     <label for="setting__xml2vcf__splited__filename_fullname">
-      <span lang="en" class="en">Filename: Full Person Name</span>
-      <span lang="de" class="de">Dateiname: Ganze Personen Name</span>
+      <span lang="en" class="en">Name of the .vcf files:</span>
+      <span lang="de" class="de">Namen der .vcf Dateien:</span>
     </label>
-    <input type="checkbox" id="setting__xml2vcf__splited__filename_fullname" autocomplete="off" />
+    <select type="select" id="setting__xml2vcf__splited__filename_fullname" autocomplete="off">
+      <option value="0" selected x-translation-de="Frage später: initalien oder ganz">ask later: inital or full</option>
+      <option value="inital_letters">inital letters only: Ma_Mu_vCard2-1.vcf</option>
+      <option value="full_name">full name: Max_Musters_vCard2-1.vcf</option>
+    </select>
+    </fieldset>
     </p>
   </fieldset>
   <br />
@@ -550,17 +562,17 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
  if(multipleDirectDownload){
    var text__AskMultipleVcf="It will be created and downloaded lots of files: \ncounted: "+contacts.length+" files.\nDo you want really want continue??";
    if(selectedLanguage=="de")text__AskMultipleVcf="Es werden gleiche (sehr) vielen Dateien erstellt und runtergeladen: \n"+contacts.length+" Stück. \nMöchten Sie fortfahren?";
-   var text__AskMultipleVcf_name="Filename example (look in settings):\nPerson-Name: Max Muster\nFile-name: ";
-   if(selectedLanguage=="de") text__AskMultipleVcf_name="Dateiname Beispiel (siehe in Einstellungen):\nPerson Name: Max Muster\nDateiname: ";
-   if(!document.getElementById('setting__xml2vcf__splited__filename_fullname').checked) text__AskMultipleVcf_name+="Ma Mu_v2-1__converted_.vcf";
+   var text__AskMultipleVcf_fileName="File-Names: used the full Person Name, as filename? \n(otherwise just a few inital letters) ";
+   if(selectedLanguage=="de") text__AskMultipleVcf_fileName="Datei-Namen:\nSoll der volle Person Name als Dateinamen verwendet werden? (ansonsten nur ersten beiden Anfangs-Buchstaben)";
+   setting__xml2vcf__splited__filename_fullname = document.getElementById('setting__xml2vcf__splited__filename_fullname').value;
    var text__AskMultipleVcf_version="";
    if(document.getElementById('setting__xml2vcf__allversions').checked){
-     text__AskMultipleVcf_version="Export in VCard-Version "+document.getElementById('setting__xml2vcf__version').value;
-     if(selectedLanguage!="de")text__AskMultipleVcf_version+="\nIt is not possible to export in all vcard-version in this step.";
-     if(selectedLanguage=="de")text__AskMultipleVcf_version+="\nEs ist nicht möglich in alle Vcard-Versionen gleichzeitig zu exportieren.";
+     text__AskMultipleVcf_version="Export will be in VCard-Version "+document.getElementById('setting__xml2vcf__version').value;
+     if(selectedLanguage!="de")text__AskMultipleVcf_version+="\n(It is not possible to export in all vcard-version in this step.)";
+     if(selectedLanguage=="de")text__AskMultipleVcf_version+="\n(Es ist nicht möglich in alle Vcard-Versionen gleichzeitig zu exportieren.)";
    }
    if(!multipleDirectDownloadZip) if(!confirm(text__AskMultipleVcf) ) return ""; //multipleDirectDownload=false;
-   if(!confirm(text__AskMultipleVcf_name)) return ""; //multipleDirectDownload=false;
+   if(setting__xml2vcf__splited__filename_fullname==0 && confirm(text__AskMultipleVcf_fileName)) setting__xml2vcf__splited__filename_fullname='full_name'; else setting__xml2vcf__splited__filename_fullname='inital_letters';
    if(text__AskMultipleVcf_version!='' && !confirm(text__AskMultipleVcf_version)) return "";
  }
  for(i=0;i<contacts.length;i++)
@@ -630,7 +642,7 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
   out += "END:VCARD\n";
   if(multipleDirectDownload){
     var filen=person
-    if(!document.getElementById('setting__xml2vcf__splited__filename_fullname').checked) filen=filen.replace(/([^ \.;,])([^ \.;,])*/g,'$1');
+    if(setting__xml2vcf__splited__filename_fullname=='inital_letters') filen=filen.replace(/([^ \.;,])([^ \.;,])*/g,'$1');
     if(multipleDirectDownloadZip) z.str2zip(filen+"_vcard"+v.replace(/\./,'-')+".vcf", out, '');
     else prepare_and_download(out,filen,'vcf');
   }
@@ -940,7 +952,7 @@ function readMultipleFiles(e) {
   if(selectedLanguage=="de") text__aks_about_unknown_files = "Möchte Sie gefragt werden, zu jeder dieser unbekannten Datei?";
   var text__merge_to_single_phonebook="Merge to a single merged phonebook?"; //\n(only with the same file-format possible)
   if(selectedLanguage=="de")text__merge_to_single_phonebook="Zusammenfügen zu einen einzelnen Telefonbuch?";
-  //inactiv:changedToAskLaterForZip //var text__export_as_zip="Export as splited Single VCard for each single Person. And put them all in a .zip file?";
+  //inactiv:changedToAskLaterForZip //var text__export_as_zip="Export as splited separated VCard for each single Person. And put them all in a .zip file?";
   //inactiv:changedToAskLaterForZip //if(selectedLanguage=="de") text__export_as_zip="Exportiere als geteilte einzel VCard für jede einzelne Person. Und diese dann in eine .zip Datei?";
   
   var counterFiletypes = Array();
@@ -1231,7 +1243,7 @@ Other functions:
 <li> Multiple files can be selected and merge before.</li>
 <li> separated multiple .vcf files can be converted or created. These multiple files can contains just a single person / contact.
   <ul>
-    <li> Single- and Multi-VCard files: Contact-data, which are splited in multiple separated .vcf files are supported. These .vcf files contain per file only a single person / contact.<br>
+    <li> Separated- and Multi-VCard files: Contact-data, which are splited in multiple separated .vcf files are supported. These .vcf files contain per file only a single person / contact.<br>
       <small>(General computer knowledge: How To select multiple files on any computer system: You can select multiple files by press and hold <kbd>STRG</kbd> while file selection, or work with <kbd>⇧ Shift</kdb> (on first and last file), or with drag'n'drop).</small>
     </li>
     <li> Reverse also possible: Convert into multiple splited .vcf files: for each single person one single .vcf file. <br> These (lots of) files can be created directly - or - put all in a .zip file.</li>
@@ -1258,7 +1270,7 @@ Weitere Funktionen:
 <ul>
 <li> Mehrere Dateien auswählen und vorher zusammenfügen lassen: .vcf Dateien können vorher zusammengefügt werden. (beim Datei auswählen <kbd>STRG</kbd> gedrückt halten oder per <kbd>⇧ Shift<small>(auch Umschalttaste genannt)</small></kbd>)</li>
 <li> Es läuft direkt im Browser.  ( Es ist keine Installtion nötig. Kein Server. Keine Cloud. Nur lokal ausgeführter Programmcode. )</li>
-<li> Single- und Multi-VCard dateien: Kontakt-daten, die auf mehrere einzelne (getrennte) .vcf Dateien aufgeteilt sind, werden auch unterstützt (zum konvertieren oder zum erstellen). Diese .vcf Dateien enthalten je Datei nur eine einzelne Person / Kontakt.
+<li> Getrennt- und Multi-VCard dateien: Kontakt-daten, die auf mehrere einzelne (getrennte) .vcf Dateien aufgeteilt sind, werden auch unterstützt (zum konvertieren oder zum erstellen). Diese .vcf Dateien enthalten je Datei nur eine einzelne Person / Kontakt.
   <ul>
     <li> Mehrere .vcf Dateien können ausgewählt und zusammengefügt werden (optional).<br>
       <small>(Allgemeines Computer wissen: Wie man mehrer Dateien an Computer System auswählt: Sie können mehrer Dateien auswählen über das drücken und halten der Taste <kbd>STRG</kbd> beim der Datei auswahl, oder sie arbeiten mit Taste <kbd>⇧ Shift</kdb> (auf der ersten und letzten Datei), oder mit der Funktion drag'n'drop).</small>
@@ -1333,7 +1345,8 @@ if(window.location.hash.length>2 && all_languages.indexOf( window.location.hash.
 else if(language.substring(0,2)=='de')changeLanguage('de');
 window.addEventListener('hashchange', function(){ 
     if(window.location.hash.length>2 && all_languages.indexOf( window.location.hash.substring(1) )>=0) changeLanguage( window.location.hash.substring(1) ); 
-    });
+});
+
 function changeLanguage(newSetLang){
  selectedLanguage=newSetLang;
  var e = document.getElementsByClassName(newSetLang);
@@ -1341,18 +1354,30 @@ function changeLanguage(newSetLang){
    e[i].style.display='inline-block';
    if(e[i].tagName=="H1") e[i].style.display='block';
   }
- for(j=0;j<all_languages.length;j++){
-  if(all_languages[j]==newSetLang)continue;
-  var e = document.getElementsByClassName(all_languages[j]);
-  for(i=0;i<e.length;i++){
-   e[i].style.display='none';
-  }
+  for(j=0;j<all_languages.length;j++){
+   if(all_languages[j]==newSetLang)continue;
+   var e = document.getElementsByClassName(all_languages[j]);
+   for(i=0;i<e.length;i++){
+    e[i].style.display='none';
+   }
   }
   if(window.location.hash.length>2 && all_languages.indexOf( window.location.hash.substring(1) )>=0){
   document.documentElement.lang=newSetLang;
   document.getElementsByTagName('html')[0].setAttribute('lang',newSetLang);}
   else if(document.documentElement.lang!='') document.documentElement.lang='';
-}
+  
+  var e=document.getElementById('setting__xml2vcf__splited__filename_fullname').getElementsByTagName('option');
+  for(var i=0;i<e.length;i++){
+   if(selectedLanguage=="de" && e[i].hasAttribute("x-translation-de")){
+    if(!e[i].hasAttribute("x-translation-en"))e[i].setAttribute("x-translation-en",e[i].innerText);
+    e[i].innerText = e[i].getAttribute("x-translation-de");
+   }
+   if(selectedLanguage=="en" && e[i].hasAttribute("x-translation-en")){
+    e[i].innerText = e[i].getAttribute("x-translation-en");
+   }
+ }
+
+} //end function
 
 //Help Privacy & Help Privacy show Offline state in 
 if(window.location.hash=="#sec_adv_en")document.getElementById("sec_adv_en").parentNode.open="open";
