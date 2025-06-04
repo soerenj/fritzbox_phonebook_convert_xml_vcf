@@ -698,11 +698,13 @@ function convert_to_xml(){
   //config
  var vcf_use_which_name = 'FN'; // F or FN 
 
+ var text__charset_unsupported="sorry. Can't handle this charset. Possible some special character are wrong. Or the file is not import-able into Fritzbox.";
+ if(selectedLanguage=="de") text__charset_unsupported="sorry. Kann mit diesen Zeichensatz ('charset') nicht umgehen. Möglich dasn einige Sonderzeichen oder Umlaute falsch sind. Oder, das die ganze Datei sich nicht in die Fritzbox importieren lässt.";
  var text = document.getElementById('phonebook_vcf').value;
  var person, email, v;
  var out = '';
  var allowedPhoneTypes = new Array('WORK','HOME','MOBILE','FAX_WORK');
- var cantHandleCharset_showMessage=false;
+ var charset_unsupported_wasShown=false;
  out += '<?xml version="1.0" encoding="utf-8"?>\n<phonebooks>\n<phonebook owner="" name="'+new_phonebook_name+'">\n';
  var contacts = text.split('BEGIN:VCARD');
  for(i=0;i<contacts.length;i++)
@@ -720,37 +722,33 @@ function convert_to_xml(){
   var prio=false;
   
   for(j=0;j<elements.length;j++){ //handle utf8 hex code
-    if(elements[j].search(/;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE/)>=0){
-        var match = elements[j].match("(.*);(CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE.*?):(.*)");
-        var splited = match[3].split("=");
+    var str=elements[j];
+    if(str.search(/;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE/i)>=0){
+        var content = str.substr( str.indexOf(':') + 1 );
+        var splited = content.split("=");
         for(var k=0;k<splited.length;k++)
-        {
           splited[k] = splited[k].replace(/;/g,""); //;;; is (mostly?) only on end of line
-        }
-    
         var str = '';
         for(var k=0;k<splited.length;k++){
-        if(splited[k].length==0)continue;
-        if(splited[k].toUpperCase()=='C2' || splited[k].toUpperCase()=='C3')
-        {
+          if(splited[k].length==0)continue;
+          if(splited[k].toUpperCase()=='C2' || splited[k].toUpperCase()=='C3')
+          {
             var hex=splited[k]+splited[k+1];
             try{
                 str+= decodeURIComponent(hex.replace(/(..)/g,'%$1'))
             }catch(e){console.log('invalid hex input: ' + hex)}
             k++;
             continue;
+          }
+          str+=String.fromCharCode('0x'+splited[k]);
         }
-        str+=String.fromCharCode('0x'+splited[k]);
-        }
-   
-        elements[j] = match[1]+':'+str;
-        
+        elements[j] = str.substr(0,str.indexOf(':')+1 )+''+str;
      }
-     else if( elements[j].search(/;CHARSET=UTF-8/)>=0){
-        elements[j] = elements[j].replace(/;CHARSET=UTF-8/,'');
+     else if( str.search(/;CHARSET=UTF-8/i)>=0){
+        elements[j] = str.replace(/;CHARSET=UTF-8/i,'');
      }
-     else if( elements[j].search(/CHARSET=/)>=0){
-       if(!cantHandleCharset_showMessage){alert("sorry. Can't handle this charset. Possible some special character are wrong. Or the file is not import-able."); cantHandleCharset_showMessage=true;}
+     else if( str.search(/CHARSET=/i)>=0){
+       if(!charset_unsupported_wasShown){ alert(text__charset_unsupported); charset_unsupported_wasShown=true; }
      }
   }
   
@@ -774,46 +772,13 @@ function convert_to_xml(){
         
         if(type=='')
           if( document.getElementById("setting__2xml__phonenumber_edit_detect_mobile__active").checked && is_this_a_mobile_phonenumber(phone)) type='mobile';
-        
         if(type!='') typeOut='type="'+type.toLowerCase()+'"';
-        
-        // old, with Bugs: example: no supported of: TEL;TYPE=WORK;TYPE=VOICE:468468465 (the ; between type types)
-        /*
-        var typeRow='';
-        if(str.substr(0,9)=='TEL;TYPE='){
-        var nextDoppelpunkt = str.substr(10).indexOf(':');
-        var nextSimokolon   = str.substr(10).indexOf(';');
-        var end_c = nextDoppelpunkt;
-        if(nextSimokolon>0 && nextSimokolon<nextDoppelpunkt)end_c = nextSimokolon;
-        if(end_c>0){
-            typeRow = str.substr(9,end_c+1);
-            if(typeRow.indexOf(',')>0){
-                var sub = typeRow.split(',');
-                for(k=0;k<sub.length;k++){
-                    if(sub[k]=='WORK')     type='WORK';
-                    if(sub[k]=='HOME')     type='HOME';
-                    if(sub[k]=='MOBILE')   type='MOBILE';
-                    if(sub[k]=='FAX_WORK') type='FAX_WORK';
-                }
-            } else type=typeRow;
-            typeOut='type="'+type.toLowerCase()+'"';
-        }else{       
-          if( document.getElementById("setting__2xml__phonenumber_edit_detect_mobile__active").checked && is_this_a_mobile_phonenumber(phone))     typeOut='type="mobile"';
-        }
-        }
-        */
-        /*else if(str.substr(0,4)=='TEL;'){
-        //var next_sim=str.substr(0,9)
-        var endType = str.substr(5).indexOf(':');
-        var simokolon = str.substr(5).indexOf(';');
-        if(endType>3 && simokolon==0)type=' TYPE="'+str.substr(9,endType-1)+'"';
-        }*/
         phoneOut += '<number '+typeOut+' id="'+j+'">'+phone+'</number>\n';
     }
     if(str.substr(0,8).toUpperCase()=='VERSION:')v=str.substr(8);
     if(str.substr(0,5).toUpperCase()=='NOTE:' && str.indexOf('importantContact(fritzbox)')>0)prio=true;
     if(str.substr(0,5).toUpperCase()=='EMAIL'){ 
-      var match = str.toUpperCase().match(/PREF=([0-9]{1,3})[;:]/);
+      var match = str.match(/PREF=([0-9]{1,3})[;:]/i);
       var prefNewSetOrIsHigher=false;
       if(match!=null && match.length>1 && match[1]>0 && ( match[1]<email_pref || email_pref=='') ){
         prefNewSetOrIsHigher=true; email_pref=match[1]; }
@@ -979,7 +944,7 @@ function f_merge__appendfile(format,origin,add,filename){
      }
   }
   if(format=="vcf"){   
-    if(add.search('BEGIN:VCARD')>=0) origin+=add;
+    if(add.search(/BEGIN:VCARD/i)>=0) origin+=add;
     else alert(text__no_entry);
   }
   return origin;
