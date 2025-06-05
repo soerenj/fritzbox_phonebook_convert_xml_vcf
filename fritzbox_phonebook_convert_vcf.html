@@ -39,7 +39,7 @@
 	"name": "convert phonebook Fritzbox",
 	"description": "convert phonebook files from router Fritzbox .xml to .vcf (vcard) and backwards",
 	"programmingLanguage": "javascript",
-	"dateModified": "2025-06-04",
+	"dateModified": "2025-06-05",
 	"softwareVersion": "0.331",
 	"inLanguage": ["en", "de"],
     "mainEntityOfPage":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
@@ -52,7 +52,7 @@
 <!--
  /*
  * version: 0.331
- * date: 2025-06-04
+ * date: 2025-06-05
  *
  * Licence 
  *
@@ -116,7 +116,7 @@ input + label {vertical-align:top; }
 <span style="color:#999999"><i><span lang="en" class="en">Allowed</span><span lang="de" class="de">Erlaubt</span>: Fritzbox .xml , .vcf , .vcard</i></span><br>
 -->
 <span id="file-input_drag-n-drop_text_drophere" style="display:none">Drop your file here</span>
-<input type="file" multiple id="file-input_drag-n-drop" autocomplete="off" style="display:none" /><a href="#" id="file-input_drag-n-drop_close_button" style="display:none;background: white;  font-size: 2em;  text-align: right;  top: 10%;  position: absolute;  padding: 0.5em;  right: 10%; border-radius:20pt;" onClick="unhighlight();return false;" class="maybebutton">Close 🗙</a><br>
+<input type="file" multiple id="file-input_drag-n-drop" autocomplete="off" style="display:none" /><a href="#" id="file-input_drag-n-drop_close_button" style="display:none;background: white;  font-size: 2em;  text-align: right;  top: 10%;  position: absolute;  padding: 0.5em;  right: 10%; border-radius:20pt;" onClick="dragNDropArea_Hide();return false;" class="maybebutton">Close 🗙</a><br>
 </div>
 <p id="container_file-input_xml">
 <label for="file-input_xml" id="label_file-input_xml">
@@ -484,13 +484,14 @@ function toogle_folder_file_select_mode(folderMode){
  }
  var d=''
  if(folderMode)d='none';
- if(document.getElementById('file-input_drag-n-drop').value=='')document.getElementById('container_file-input_drag-n-drop').style.display='none';
+ if(document.getElementById('file-input_drag-n-drop').value=='')dragNDropArea_Hide(); //old (bad): document.getElementById('container_file-input_drag-n-drop').style.display='none';
+
  document.getElementById('container_file-input_xml').style.display=d;
  document.getElementById('container_file-input_format2').style.display=d;
  document.getElementById('container_f_text_or').style.display=d;
  if(!folderMode)d='none'; else d='';
  document.getElementById('container_file-input_folder').style.display=d;
- 
+
  if(folderMode) document.getElementById("file-input_folder").click();
 }
 
@@ -1155,7 +1156,28 @@ function preventDefaults (e) {
   e.stopPropagation()
 }
 
-function highlight(e) {
+//Close Drag'n'Drop events
+var escapeKeyEvent;
+function dragNDropArea_CloseKeyPressEvent(e){
+  if(e.key!="Escape")return;
+  dragNDropArea_Hide(e);
+  document.removeEventListener("keydown", dragNDropArea_CloseKeyPressEvent);
+  escapeKeyEvent=undefined;
+}
+var dragNDropArea_CloseClickEvent;
+function dragNDropArea_CloseClickEventAction(e) {
+    var flyoutE = document.getElementsByClassName("drop-area_highlight")[0];
+    var targetE = e.target;
+    do {
+      if(targetE == flyoutE) return;
+      targetE = targetE.parentNode;
+    } while (targetE);
+    dragNDropArea_Hide(e);
+    document.removeEventListener("click", dragNDropArea_CloseClickEventAction);
+    dragNDropArea_CloseClickEvent=undefined;
+}
+
+function dragNDropArea_Show(e) { //show drag'n'drop field
   document.getElementById('file-input_drag-n-drop').style.display='block';
   dropArea.classList.add('drop-area_highlight');
   dropAreaText.classList.add('drop-area_text_highlight');
@@ -1163,20 +1185,24 @@ function highlight(e) {
   dropAreaText.style.marginTop='15%';
   dropAreaText.style.background='none';
   dropArea_CloseButton.style.display='block';
+  if(escapeKeyEvent==undefined)
+     escapeKeyEvent = document.addEventListener("keydown", dragNDropArea_CloseKeyPressEvent);
+  if(dragNDropArea_CloseClickEvent==undefined)
+     dragNDropArea_CloseClickEvent = document.addEventListener("click", dragNDropArea_CloseClickEventAction);
 }
 
-function unhighlight(e) {
+function dragNDropArea_Hide(e) { //hide drag'n'drop field
   dropArea.classList.remove('drop-area_highlight');
   dropAreaText.classList.remove('drop-area_text_highlight');
   dropAreaText.style.display='none';
   dropArea_CloseButton.style.display='none';
 }
 
-dropAreaDetect.addEventListener('dragenter', highlight, false);
-dropAreaDetect.addEventListener('dragover', highlight, false);
+dropAreaDetect.addEventListener('dragenter', dragNDropArea_Show, false);
+dropAreaDetect.addEventListener('dragover', dragNDropArea_Show, false);
 
-dropAreaDetect.addEventListener('dragleave', unhighlight, false);
-dropAreaDetect.addEventListener('drop', unhighlight, false);
+dropAreaDetect.addEventListener('dragleave', dragNDropArea_Hide, false);
+dropAreaDetect.addEventListener('drop', dragNDropArea_Hide, false);
 
 //-->
 </script>
