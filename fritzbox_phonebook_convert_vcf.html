@@ -774,7 +774,7 @@ function convert_to_xml(){
         if(type=='')
           if( document.getElementById("setting__2xml__phonenumber_edit_detect_mobile__active").checked && is_this_a_mobile_phonenumber(phone)) type='mobile';
         if(type!='') typeOut='type="'+type.toLowerCase()+'"';
-        phoneOut += '<number '+typeOut+' id="'+j+'">'+phone+'</number>\n';
+        phoneOut += '<number '+typeOut+' id="'+j+'">'+sanitize_personname(phone,false)+'</number>\n';
     }
     if(str.substr(0,8).toUpperCase()=='VERSION:')v=str.substr(8);
     if(str.substr(0,5).toUpperCase()=='NOTE:' && str.indexOf('importantContact(fritzbox)')>0)prio=true;
@@ -783,7 +783,7 @@ function convert_to_xml(){
       var prefNewSetOrIsHigher=false;
       if(match!=null && match.length>1 && match[1]>0 && ( match[1]<email_pref || email_pref=='') ){
         prefNewSetOrIsHigher=true; email_pref=match[1]; }
-      if(email_temp=='' || prefNewSetOrIsHigher) email_temp = str.substr( str.indexOf(':')+1);
+      if(email_temp=='' || prefNewSetOrIsHigher) email_temp = sanitize_personname(str.substr( str.indexOf(':')+1),false);
     }
   }
   
@@ -813,7 +813,9 @@ function sanitize_personname(person,inkluding_quotes){
   person = person.replace(/""/gm,"&quot;");       //handle "" (from libre office export of single " possible )
   person = person.replace(/\"/gm,"&quot;");       //handle "
   person = person.replace(/"/gm,"&quot;");        //handle "
-  if(inkluding_quotes){
+  person = person.replace(/</gm,"&gt;");          //handle <
+  person = person.replace(/>/gm,"&lt;");          //handle >
+  if(inkluding_quotes==undefined || inkluding_quotes){
     var tmp = '';
     tmp= person.replace(/^"(.*)"$/gm,'$1'); //trim " (only once at beginn and end)
     if(tmp.length>0) person = tmp;
@@ -1125,7 +1127,9 @@ document.getElementById('file-input_folder')
 function show_advanced_view(state){
  var e = document.getElementsByClassName('advanced_view');
  for(i=0;i<e.length;i++){
-  if(state=='show')e[i].style.display='inline-block';
+  if(state=='show'){
+   if(e[i].tagName=='div')e[i].style.display='block';
+   else e[i].style.display='inline-block'; }
   if(state=='hide')e[i].style.display='';
  }
  if(state=='show'){
