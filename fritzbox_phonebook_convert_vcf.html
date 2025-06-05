@@ -592,19 +592,19 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
     (undefined==contacts[i].getElementsByTagName("telephony")[0].getElementsByTagName("number")[0].firstChild.nodeValue)
   ){ logError.push(contacts[i].innerHTML); continue; }
 
-  out = 'BEGIN:VCARD\n';
-  if(v=="2.1") out += 'VERSION:2.1\n';
-  if(v=="3.0") out += 'VERSION:3.0\n';
-  if(v=="4.0") out += 'VERSION:4.0\n';
+  out = 'BEGIN:VCARD\r\n';
+  if(v=="2.1") out += 'VERSION:2.1\r\n';
+  if(v=="3.0") out += 'VERSION:3.0\r\n';
+  if(v=="4.0") out += 'VERSION:4.0\r\n';
   contact = contacts[i];
   person  = contact.getElementsByTagName("person")[0].getElementsByTagName("realName")[0].firstChild.nodeValue;
   telephony = contact.getElementsByTagName("telephony")[0].getElementsByTagName("number");
   
   //name
-  tmp = person.replace('\n','');
+  tmp = person.replace('\r\n','');
   if(uri_encode  && v=="2.1")tmp = encodeURI(tmp).replace(/%/g,'=');
-  out += 'N' +propertyAdd+":"+tmp+'\n';
-  out += 'FN'+propertyAdd+":"+tmp+'\n';
+  out += 'N' +propertyAdd+":"+tmp+'\r\n';
+  out += 'FN'+propertyAdd+":"+tmp+'\r\n';
   
   //phone
   for(j=0;j<telephony.length;j++){
@@ -626,9 +626,9 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
     }
 
     if( export_also_phonetype && telephony[j].getAttribute('type')!=undefined) out += ';TYPE='+telephony[j].getAttribute('type').toUpperCase()+',VOICE';
-    out += ":"+phone+'\n';
+    out += ":"+phone+'\r\n';
   }
-  if(export_also_prio && telephony.length>0 && telephony[0].getAttribute('prio')!='')out += "NOTE:importantContact(fritzbox)\n";
+  if(export_also_prio && telephony.length>0 && telephony[0].getAttribute('prio')!='')out += "NOTE:importantContact(fritzbox)\r\n";
   
   //email
   if(export_also_email){
@@ -639,11 +639,11 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
       if(undefined==services[j].firstChild.nodeValue) { logError.push(services[j]); continue; }
       tmp = services[j].firstChild.nodeValue;
       if(uri_encode  && v==2.1)tmp = encodeURI(tmp).replace(/%/g,'=');
-      out += "EMAIL"+propertyAdd+":"+tmp+'\n';
+      out += "EMAIL"+propertyAdd+":"+tmp+'\r\n';
     }
   }
   
-  out += "END:VCARD\n";
+  out += "END:VCARD\r\n";
   if(multipleDirectDownload){
     var filen=person
     if(setting__xml2vcf__splited__filename_fullname=='inital_letters') filen=filen.replace(/([^ \.;,])([^ \.;,])*/g,'$1');
