@@ -717,7 +717,7 @@ function convert_to_xml(){
  {
   if(contacts[i]=='')continue;
   var c = contacts[i];
-  var elements = contacts[i].split(/\n|\r\n/);
+  var elements = contacts[i].split(/\r\n|\r|\n/);
   var personOut='';
   var phoneOut = '';
   var EmailOut='';
@@ -946,7 +946,7 @@ function f_merge__appendfile(format,origin,add,filename){
      if(start<=0){ alert(text__no_entry);return origin;} //=not found
      if(origin.length==0) origin=add;
      else {
-       var end=add.search(/[(\r\n)|(\n\r)|\r|\n]<\/phonebook>/);
+       var end=add.search(/[(\r\n)|\r|\n]<\/phonebook>/);
        if(end<=0){ alert(text__no_entry);return origin;} //=not found
        origin=origin.replace(/(<\/phonebook>)/,add.substring(start,end)+"</phonebook>");
      }
