@@ -629,7 +629,7 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
  var propertyAdd = '';
  if(add_charset && v==2.1)propertyAdd = ";CHARSET=UTF-8";
 
- for(i=0;i<contacts.length;i++)
+ for(var i=0;i<contacts.length;i++)
  {
   //check values
   if(undefined==contacts[i]){ logError.push(''); continue; }
@@ -654,7 +654,7 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
   out += foldLineMaybe('FN'+propertyAdd+":"+tmp+'\r\n');
   
   //phone TEL
-  for(j=0;j<telephony.length;j++){
+  for(var j=0;j<telephony.length;j++){
     if(null==telephony[j].firstChild || undefined==telephony[j].firstChild.nodeValue || null==telephony[j].firstChild.nodeValue) { logError.push(person); if(telephony[j].firstChild==null)logError.push('empty number:'); logError.push(telephony[j]); continue; }
 
     phone = myTrimQuotes(telephony[j].firstChild.nodeValue);
@@ -684,7 +684,7 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
     services = Array();
     if(undefined==contact.getElementsByTagName("services")) { logError.push(services[j]); continue; }
     if(contact.getElementsByTagName("services").length>0)services = contact.getElementsByTagName("services")[0].getElementsByTagName("email");
-    for(j=0;j<services.length;j++){
+    for(var j=0;j<services.length;j++){
       if(undefined==services[j].firstChild.nodeValue) { logError.push(services[j]); continue; }
       tmp = services[j].firstChild.nodeValue;
       if(uri_encode  && v==2.1)tmp = encodeURI(tmp).replace(/%/g,'=');
@@ -735,7 +735,7 @@ function getOrCheckProperties(str,searchType,searchValueArray){
         if(searchType==undefined || searchType==g[0].toUpperCase()){
           var sub = g[1].split(","); //e.g. "Tel;TYPE=WORK,HOME"  //?missing: should not handle escape seq.: \,?
           if(sub.length>0){
-            for(k=0;k<sub.length;k++){
+            for(var k=0;k<sub.length;k++){
                 if(searchValueArray==undefined)out.push( sub[k] );
                 else{
                   if(searchValueArray.indexOf(sub[k].toUpperCase())!=-1)return sub[k].toUpperCase();
@@ -762,7 +762,7 @@ function convert_to_xml(){
  var charset_unsupported_wasShown=false;
  out += '<?xml version="1.0" encoding="utf-8"?>\n<phonebooks>\n<phonebook owner="" name="'+new_phonebook_name+'">\n';
  var contacts = text.split('BEGIN:VCARD');
- for(i=0;i<contacts.length;i++)
+ for(var i=0;i<contacts.length;i++)
  {
   if(contacts[i]=='')continue;
   var c = contacts[i];
