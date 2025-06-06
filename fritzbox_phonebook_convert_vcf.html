@@ -39,8 +39,8 @@
 	"name": "convert phonebook Fritzbox",
 	"description": "convert phonebook files from router Fritzbox .xml to .vcf (vcard) and backwards",
 	"programmingLanguage": "javascript",
-	"dateModified": "2025-06-05",
-	"softwareVersion": "0.331",
+	"dateModified": "2025-06-06",
+	"softwareVersion": "0.332",
 	"inLanguage": ["en", "de"],
     "mainEntityOfPage":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
 	"url":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
@@ -51,8 +51,8 @@
 </script>
 <!--
  /*
- * version: 0.331
- * date: 2025-06-05
+ * version: 0.332
+ * date: 2025-06-06
  *
  * Licence 
  *
@@ -437,7 +437,7 @@ var pre_numbers__with_country_codes__and_mobile = [
 var detected_default_langcode='';
 var detected_default_langcountrycode='';
 var e = document.getElementById("setting__2xml__phonenumber_edit_detect_mobile__your_countrycode");
-for(i=0;i<pre_numbers__with_country_codes__and_mobile.length;i++){
+for(var i=0;i<pre_numbers__with_country_codes__and_mobile.length;i++){
  var a=pre_numbers__with_country_codes__and_mobile[i];
  var pattern = "^"+a[1];
  var option = document.createElement("option");
@@ -479,7 +479,7 @@ function toogle_folder_file_select_mode(folderMode){
   linktext_backtofiles.style.display='none';
  }
  var e=document.getElementsByTagName('input'); //for drag'n'drop
- for(let i=0;i<e.length;i++){
+ for(var i=0;i<e.length;i++){
    if(e[i].getAttribute('type')!='file')continue;
    if(folderMode) e[i].setAttribute('webkitdirectory','webkitdirectory');
    else           e[i].removeAttribute('webkitdirectory','');
@@ -754,7 +754,7 @@ function convert_to_xml(){
   
   //un-folded lines and merge them ( for very long text lines)
   var elements2 = Array();
-  for(j=0;j<elements.length;j++){
+  for(var j=0;j<elements.length;j++){
     var str=elements[j];
     if(str.length>=75){
       for(var k=j+1;k<elements.length;k++){
@@ -771,7 +771,7 @@ function convert_to_xml(){
   elements = elements2;
   elements2='';
 
-  for(j=0;j<elements.length;j++){ //handle utf8 hex code
+  for(var j=0;j<elements.length;j++){ //handle utf8 hex code
     var str=elements[j];
     if(str.search(/;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE/i)>=0){
         var content = str.substr( str.indexOf(':') + 1 );
@@ -802,7 +802,7 @@ function convert_to_xml(){
      }
   }
   
-  for(j=0;j<elements.length;j++){
+  for(var j=0;j<elements.length;j++){
     var str = elements[j];
     if((str.substr(0,3).toUpperCase()=='FN:' || str.substr(0,3).toUpperCase()=='FN;') && vcf_use_which_name=='FN'){
         strOut = str.substr( str.indexOf(':') + 1 );
@@ -955,7 +955,7 @@ function myTrimQuotes(aa){
 function is_this_a_mobile_phonenumber(phone){
   var your_default_country_code = document.getElementById("setting__2xml__phonenumber_edit_detect_mobile__your_countrycode").value;
   if(phone.length<=5)return false;
-  for(i=0;i<pre_numbers__with_country_codes__and_mobile.length;i++){
+  for(var i=0;i<pre_numbers__with_country_codes__and_mobile.length;i++){
     var a= pre_numbers__with_country_codes__and_mobile[i];
     var pattern = "(";
     if(your_default_country_code==a[2]) pattern+="0|";
@@ -1046,7 +1046,7 @@ function readMultipleFiles(e) {
   // In case of multiple selected files with different files-types.
   var ignoredFiles = '';
   var unknownFiles = '';
-  for(i=0;i<files.length;i++){
+  for(var i=0;i<files.length;i++){
     var file = files[i];
     var reader = new FileReader();
     reader.fileName = file.name;
@@ -1082,7 +1082,7 @@ function readMultipleFiles(e) {
   
   var counter__merged_append=0;
   foldername = '';
-  for(i=0;i<files.length;i++){
+  for(var i=0;i<files.length;i++){
       var file = files[i];
       var reader = new FileReader();
       //if(e.target.id=='file-input_drag-n-drop' || e.target.id=='file-input_xml' || e.target.id=='file-input_format2' || e.target.id=='file-input_folder'){
@@ -1175,7 +1175,7 @@ document.getElementById('file-input_folder')
 
 function show_advanced_view(state){
  var e = document.getElementsByClassName('advanced_view');
- for(i=0;i<e.length;i++){
+ for(var i=0;i<e.length;i++){
   if(state=='show'){
    if(e[i].tagName=='div')e[i].style.display='block';
    else e[i].style.display='inline-block'; }
@@ -1448,14 +1448,14 @@ window.addEventListener('hashchange', function(){
 function changeLanguage(newSetLang){
  selectedLanguage=newSetLang;
  var e = document.getElementsByClassName(newSetLang);
-  for(i=0;i<e.length;i++){
+  for(var i=0;i<e.length;i++){
    e[i].style.display='inline-block';
    if(e[i].tagName=="H1") e[i].style.display='block';
   }
-  for(j=0;j<all_languages.length;j++){
+  for(var j=0;j<all_languages.length;j++){
    if(all_languages[j]==newSetLang)continue;
    var e = document.getElementsByClassName(all_languages[j]);
-   for(i=0;i<e.length;i++){
+   for(var i=0;i<e.length;i++){
     e[i].style.display='none';
    }
   }
@@ -1492,7 +1492,7 @@ function offline_note(){
     var text=''; var c_color='';
     if(window.navigator.onLine=='off' || window.navigator.onLine==false ){ text='&check;'; c_color='green';}
     var elems=document.getElementsByClassName('onlineoffline_state');
-    for(i=0;i<elems.length;i++){
+    for(var i=0;i<elems.length;i++){
       elems[i].innerHTML=text;
       elems[i].style.color=c_color;
     }
