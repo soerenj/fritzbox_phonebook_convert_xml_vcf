@@ -39,8 +39,8 @@
 	"name": "convert phonebook Fritzbox",
 	"description": "convert phonebook files from router Fritzbox .xml to .vcf (vcard) and backwards",
 	"programmingLanguage": "javascript",
-	"dateModified": "2025-06-06",
-	"softwareVersion": "0.333",
+	"dateModified": "2025-06-11",
+	"softwareVersion": "0.34",
 	"inLanguage": ["en", "de"],
     "mainEntityOfPage":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
 	"url":"https://soerenj.github.io/fritzbox_phonebook_convert_xml_vcf/fritzbox_phonebook_convert_vcf.html",
@@ -51,8 +51,8 @@
 </script>
 <!--
  /*
- * version: 0.333
- * date: 2025-06-06
+ * version: 0.34
+ * date: 2025-06-11
  *
  * Licence 
  *
@@ -260,7 +260,7 @@ END:VCARD
 <textarea id="error_logs" style="display:none" class=""></textarea>
 
 <div>
- <details>
+ <details id="settings_details_container">
   <summary>
    <span lang="en" class="en" >⚙ Settings</span>
    <span lang="de" class="de">⚙ Einstellungen</span>
@@ -400,18 +400,46 @@ END:VCARD
     <span lang="en" class="en">That is the shown new Phonebook-Name in the Fritzbox. This is not the filename.</span>
     <span lang="de" class="de">Das ist der neue Telefonbuch-Namen in der Fritzbox selbst. Es ist nicht der Datei-Name.</span>
   </span>
-  <button type="button" onClick="document.getElementById(last_uploaded_file__fieldid).dispatchEvent(new Event('change'));" id="convert_again_file" style="display:none;margin-top:10pt;margin-bottom:10pt;" value="Convert the same file again" ><span lang="en" class="en">Convert the same file(s) again</span><span lang="de" class="de">Konvertiere die gleiche Datei(en) nochmal</span></button>
-  <br/><br/>
+  <div style="margin-left:0;">
+  <span lang="en" class="en">More settings (mostly not needed): </span>
+  <span lang="de" class="de">Weitere Einstellungen (meistens nicht nötig): </span>
+  <a name="settings_charset_set_details_container"></a>
+  <details id="settings_charset_set_details_container">
+  <summary>
+    <span lang="en" class="en">Charset: </span>
+    <span lang="de" class="de">Zeichensatz (engl. charset):</span>
+  </summary>
+  <fieldset>
+  <select id="settings_charset_set" onChange="var e=document.getElementById('settings_charset_set_customtext'); if(this.value=='CUSTOMTEXT')e.style.display='';else e.style.display='none';" autocomplete="off">
+    <option value="" selected>UTF-8 (default)</option>
+    <option value="ISO-8859-1">ISO-8859-1</option>
+    <option value="ISO-8859-2">ISO-8859-2</option>
+    <option value="ISO-8859-15">ISO-8859-15</option>
+    <option value="windows-1252">windows-1252</option>
+    <option value="ISO-8859-14">ISO-8859-14</option>
+    <option value="CUSTOMTEXT">custom text</option>
+  </select>
+  <input type="text" id="settings_charset_set_customtext" placeholder="example: ISO-8859-14" style="display:none;" />
+  <span style="color:#999;">
+    <span lang="en" class="en">If you have problems with special characters (at vcf &rArr; xml). Try to set here your charset. This setting should be only be needed / possible for .vcf-files with vCard-Version 2.1 (or maybe for 3.0).<br/>
+    Do not mix: Please do not select multiple files ( or merge ) at the same time with different charset. Files with vCard-Version 3.0 should, and vCard-Version 4.0 must be everytime UTF-8.</span>
+    <span lang="de" class="de">Bei Problemen mit Umlauten oder Sonderzeichen (bei vcf &rArr; xml), versuche einen anderen Zeichensatz. Diese Anpassung sollte nur für .vcf-Dateien mit vCard-Version 2.1 (oder evtl. 3.0) nötig / möglich sein. <br>
+    Nicht mischen: Bitte nicht mehrere Dateien gleichzeitig auswählen (oder zusammenfügen) die verschiende Zeichensatz haben. Dateien mit vCard-Version 3.0 sollte und vCard-Version 4.0 muss immer UTF-8 sein.</span>
+  </span>
+  </fieldset>
+  </details>
   <details>
    <summary>
-      <span lang="en" class="en">unimportant setting: Select file dialog - type detection</span>
-      <span lang="de" class="de">unwichtige Einstellung: Datei auswählen - Datei Type erkennung</span>
+      <span lang="en" class="en">Select file dialog: type detection</span>
+      <span lang="de" class="de">Datei auswählen Fenster: Datei Type erkennung</span>
    </summary>
       <fieldset >
+        <!--
         <legend>
           <span lang="en" class="en">Select file dialog</span>
           <span lang="de" class="de">Datei auswählen</span>
         </legend>
+        -->
         <input type="checkbox" onChange="showOnlySupportedChange(this.value)" id="setting__upload__filetype_only_accepted" checked autocomplete="off">
         <label for="setting__upload__filetype_only_accepted">
           <span lang="en" class="en">Show only supported files (.xml / .vcf / ~) <span style="color:#999">( only these are selectable in file upload window/dialog in browser )</span></span>
@@ -428,6 +456,11 @@ END:VCARD
         </label>
       </fieldset>
   </details>
+  </div>
+  <button type="button" onClick="document.getElementById(last_uploaded_file__fieldid).dispatchEvent(new Event('change'));" id="convert_again_file" style="display:none;margin-top:10pt;margin-bottom:10pt;" value="Convert the same file again" >
+    <span lang="en" class="en">Convert the same file(s) again</span>
+    <span lang="de" class="de">Konvertiere die gleiche Datei(en) nochmal</span>
+  </button>
   <br>
   </div>
   </fieldset>
@@ -503,7 +536,7 @@ function toogle_folder_file_select_mode(folderMode){
   linktext_backtofiles.style.display='none';
  }
  var e=document.getElementsByTagName('input'); //for drag'n'drop
- for(var i=0;i<e.length;i++){
+ for(let i=0;i<e.length;i++){
    if(e[i].getAttribute('type')!='file')continue;
    if(folderMode) e[i].setAttribute('webkitdirectory','webkitdirectory');
    else           e[i].removeAttribute('webkitdirectory','');
@@ -627,7 +660,7 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
  }
 
  var propertyAdd = '';
- if(add_charset && v==2.1)propertyAdd = ";CHARSET=UTF-8";
+ if(add_charset && v=="2.1")propertyAdd = ";CHARSET=UTF-8";
 
  for(var i=0;i<contacts.length;i++)
  {
@@ -687,7 +720,7 @@ function convert_to_vcf(multipleDirectDownload=false,multipleDirectDownloadZip=f
     for(var j=0;j<services.length;j++){
       if(undefined==services[j].firstChild.nodeValue) { logError.push(services[j]); continue; }
       tmp = services[j].firstChild.nodeValue;
-      if(uri_encode  && v==2.1)tmp = encodeURI(tmp).replace(/%/g,'=');
+      if(uri_encode  && v=="2.1")tmp = encodeURI(tmp).replace(/%/g,'=');
       out += foldLineMaybe("EMAIL"+propertyAdd+":"+tmp+'\r\n');
     }
   }
@@ -749,6 +782,7 @@ function getOrCheckProperties(str,searchType,searchValueArray){
      return out;
 }
 
+
 function convert_to_xml(){
   //config
  var vcf_use_which_name = 'FN'; // F or FN 
@@ -760,8 +794,11 @@ function convert_to_xml(){
  var out = '';
  var allowedPhoneTypes = new Array('WORK','HOME','MOBILE','FAX_WORK');
  var charset_unsupported_wasShown=false;
+
  out += '<?xml version="1.0" encoding="utf-8"?>\n<phonebooks>\n<phonebook owner="" name="'+new_phonebook_name+'">\n';
+
  var contacts = text.split('BEGIN:VCARD');
+
  for(var i=0;i<contacts.length;i++)
  {
   if(contacts[i]=='')continue;
@@ -795,6 +832,10 @@ function convert_to_xml(){
   elements = elements2;
   elements2='';
 
+  var settings_charset_set=document.getElementById('settings_charset_set').value.toUpperCase();
+  if(settings_charset_set=="CUSTOMTEXT") settings_charset_set=document.getElementById('settings_charset_set_customtext').value.toUpperCase();
+
+  //handle QUOTED-PRINTABLE
   for(var j=0;j<elements.length;j++){ //handle utf8 hex code
     var str=elements[j];
     if(str.search(/;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE/i)>=0){
@@ -821,9 +862,10 @@ function convert_to_xml(){
      else if( str.search(/;CHARSET=UTF-8/i)>=0){
         elements[j] = str.replace(/;CHARSET=UTF-8/i,'');
      }
-     else if( str.search(/CHARSET=/i)>=0){
+     else if( str.search(/CHARSET=/i)>=0 && settings_charset_set==''){
        if(!charset_unsupported_wasShown){ alert(text__charset_unsupported); charset_unsupported_wasShown=true; }
      }
+
   }
   
   for(var j=0;j<elements.length;j++){
@@ -865,8 +907,8 @@ function convert_to_xml(){
   var catNumber=0;  if(prio) catNumber = 1;
   out += '<contact>\n<category>'+catNumber+'</category>\n';
   if(prio)phoneOut=phoneOut.replace(/(<number[^>]*)(>)/,'$1 prio="1">');
-  if(v==2.1)personOut = personOut.replace(/=/g,'%');
-  if(v==2.1)personOut = decodeURI(personOut);
+  if(v=="2.1")personOut = personOut.replace(/=/g,'%');
+  if(v=="2.1")personOut = decodeURI(personOut);
   out += personOut+'<telephony nid="'+i+'">\n' + phoneOut;
   if(EmailOut!='') EmailOut='<services>'+EmailOut+'</services>';
   out += '</telephony>\n'+EmailOut+'<setup />\n<features doorphone="0" /><mod_time></mod_time><uniqueid></uniqueid>\n</contact>\n';
@@ -896,7 +938,7 @@ function sanitize_personname(person,inkluding_quotes){
     if(tmp.length>0) person = tmp;
   }
   person = person.replace(/^\s+|\s+$/gm,'');        //trim spaces (again)
-  return person;
+  return person.trim();
 }
 
 function get_filename(filename_with_path) {
@@ -912,7 +954,10 @@ function download_one_file_ask(){
   if (confirm('Download text in .vcf window?')) { prepare_and_download(document.getElementById('phonebook_vcf').value,'','vcf'); return; }
 }
 function prepare_and_download(text,filename,outType) {
-  if(text==undefined || text==null || text==false || text==""){ alert("Finish. End. No Output. Nothing to output."); return;}
+  if(text==undefined || text==null || text==false || text==""){
+    if(selectedLanguage=="de") alert("Fertig. Ende. Keine Ausgabe. Nicht zum Anzeigen.");
+    else                       alert("Finish. End. No Output. Nothing to output.");
+    return;}
   if(filename == undefined || filename=='') filename='';
   if(filename=='') filename='phonebook_for_fritzbox';
   if(outType=='xml'){
@@ -1049,7 +1094,8 @@ function readMultipleFiles(e) {
   if(selectedLanguage=="de")text__merge_to_single_phonebook="Zusammenfügen zu einen einzelnen Telefonbuch?";
   //inactiv:changedToAskLaterForZip //var text__export_as_zip="Export as splited separated VCard for each single Person. And put them all in a .zip file?";
   //inactiv:changedToAskLaterForZip //if(selectedLanguage=="de") text__export_as_zip="Exportiere als geteilte einzel VCard für jede einzelne Person. Und diese dann in eine .zip Datei?";
-  
+  var settings_charset_set=document.getElementById('settings_charset_set').value.toUpperCase();
+  if(settings_charset_set=="CUSTOMTEXT") settings_charset_set=document.getElementById('settings_charset_set_customtext').value.toUpperCase();
   var counterFiletypes = Array();
   counterFiletypes["xml"]   = 0;
   counterFiletypes["vcf"]   = 0;
@@ -1181,7 +1227,10 @@ function readMultipleFiles(e) {
           }
         //};
       }//end for
-      reader.readAsText(file);
+      if( settings_charset_set!='' &&
+          (type_from__forced_to=="vcf" || counterFiletypes["vcf"]>0))
+           reader.readAsText(file,settings_charset_set);
+      else reader.readAsText(file);
   }
 }
 
