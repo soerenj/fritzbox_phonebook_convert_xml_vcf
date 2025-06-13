@@ -420,6 +420,7 @@ END:VCARD
     <option value="CUSTOMTEXT">custom text</option>
   </select>
   <input type="text" id="settings_charset_set_customtext" placeholder="example: ISO-8859-14" style="display:none;" />
+  <span id="settings_charset_set_detected_inlastvcf"></span>
   <span style="color:#999;">
     <span lang="en" class="en">If you have problems with special characters (at vcf &rArr; xml). Try to set here your charset. This setting should be only be needed / possible for .vcf-files with vCard-Version 2.1 (or maybe for 3.0).<br/>
     Do not mix: Please do not select multiple files ( or merge ) at the same time with different charset. Files with vCard-Version 3.0 should, and vCard-Version 4.0 must be everytime UTF-8.</span>
@@ -478,6 +479,9 @@ var show_advanced_view__state = false;
 var new_phonebook_name = 'convertedPhonebook';
 var maxPhoneNumbersPerEntry = 9; //maximal Numbers on Fritzbox 7390 per each contact
 var phonetypes = ["mobile","home","work","fax_work"];//on fritzbox 7390
+
+var settings_charset_set_customtext__temp_with_prio__just_once='';
+var convertingCanceledBeQuit=false;
 
 var pre_numbers__with_country_codes__and_mobile = [
  ["de","de","+49","1[567]"],
@@ -787,18 +791,69 @@ function convert_to_xml(){
   //config
  var vcf_use_which_name = 'FN'; // F or FN 
 
- var text__charset_unsupported="sorry. Can't handle this charset. Possible some special character are wrong. Or the file is not import-able into Fritzbox.";
- if(selectedLanguage=="de") text__charset_unsupported="sorry. Kann mit diesen Zeichensatz ('charset') nicht umgehen. Möglich dasn einige Sonderzeichen oder Umlaute falsch sind. Oder, das die ganze Datei sich nicht in die Fritzbox importieren lässt.";
+ var text__charset_unsupported="Charset setting is missing.\n\nThis means: Possible some special character are currently wrong. Charset found: INSERTFOUNDCHARSET.\nWhat do you want?:\n[ OK ] = Continue anyway, or \n[ Cancel ] = Change your setting";
+ if(selectedLanguage=="de") text__charset_unsupported="Zeichensatz (engl. charset) Einstellung fehlt.\n\nDas bedeuted: Möglich das einige Sonderzeichen oder Umlaute derzeit falsch sind. Zeichensätze gefunden: INSERTFOUNDCHARSET.\nWas möchten Sie tun?:\n[ OK ] = Trotzdem fortfahren, oder \n[ Abbruch ] = Erst die Einstellung anpassen";
+ var text__charset_auto_change_possible="Detect charset: INSERTFOUNDCHARSET\nRestart with this correted charset?"
+ if(selectedLanguage=="de") text__charset_auto_change_possible="Erkannter Zeichensatz (engl. charset): INSERTFOUNDCHARSET\nNeustarten mit diesen nun richtig eingestellten Zeichensatz?"
  var text = document.getElementById('phonebook_vcf').value;
  var person, email, v;
  var out = '';
  var allowedPhoneTypes = new Array('WORK','HOME','MOBILE','FAX_WORK');
- var charset_unsupported_wasShown=false;
+ var charset_unsupported_found = new Array();
+ var charsetMissingCounter=0;
+ var settings_charset_set=document.getElementById('settings_charset_set').value.toUpperCase();
+ if( settings_charset_set=="CUSTOMTEXT") settings_charset_set=document.getElementById('settings_charset_set_customtext').value.toUpperCase();
+ document.getElementById('settings_charset_set_detected_inlastvcf').innerText='';
 
  out += '<?xml version="1.0" encoding="utf-8"?>\n<phonebooks>\n<phonebook owner="" name="'+new_phonebook_name+'">\n';
 
  var contacts = text.split('BEGIN:VCARD');
+ //detect charset
+ for(var i=0;i<contacts.length;i++)
+ {
+      if(contacts[i]=='')continue;
+      var elements = contacts[i].split(/\r\n|\r|\n/);
+      var charsetFound=false;
+      for(var j=0;j<elements.length;j++){
+            var str=elements[j];
+            var match = str.match(/;CHARSET=(.*)[;:]/i);
+            if(match==null)continue;
+            var char='';
+            if(match.length>1 ) char = match[1].toUpperCase();
+            if( char!="" && char!="UTF-8" ){
+                charsetFound=true;
+                if(charset_unsupported_found.indexOf(char)==-1)charset_unsupported_found.push(char.toUpperCase());
+          }
+     }
+     if(!charsetFound)charsetMissingCounter++;
+ }
 
+ if(charset_unsupported_found.length>0){
+            document.getElementById('settings_charset_set_detected_inlastvcf').innerText='last detected: '+charset_unsupported_found.join(' ');
+            if(    charset_unsupported_found.length>1  ||
+                  (charset_unsupported_found.length==1 && charset_unsupported_found[0]!="UTF-8" && settings_charset_set=='' ) ||
+                  (charset_unsupported_found.length==1 && charset_unsupported_found[0]!=settings_charset_set) ){
+                if(charsetMissingCounter==0 && charset_unsupported_found.length==1 && ( mergeFiles || files_counted==1) ){
+                  //( mergeFiles || files_counted==1) => will not correct work for multiple different charset files ( also too much confirm/alter dialogs confusion.)
+                  if( settings_charset_set_customtext__temp_with_prio__just_once==''){
+                      if(confirm(text__charset_auto_change_possible.replace(/INSERTFOUNDCHARSET/,charset_unsupported_found[0]))){
+                         settings_charset_set_customtext__temp_with_prio__just_once=charset_unsupported_found[0];
+                         document.getElementById(last_uploaded_file__fieldid).dispatchEvent(new Event('change'));
+                         window.setTimeout("settings_charset_set_customtext__temp_with_prio__just_once=''",50);
+                         return;
+                      }
+                  }
+                }else if(!confirm(text__charset_unsupported.replace(/INSERTFOUNDCHARSET/,charset_unsupported_found.join(' ')))){
+                    document.getElementById('settings_details_container').setAttribute('open','open');
+                    document.getElementById('settings_charset_set_details_container').setAttribute('open','open');
+                    convertingCanceledBeQuit=true;
+                    window.location='#settings_charset_set_details_container';
+                    window.setTimeout('window.scrollBy(0, -100);',50);
+                    return;
+                }
+            }
+  }
+ settings_charset_set_customtext__temp_with_prio__just_once='';
  for(var i=0;i<contacts.length;i++)
  {
   if(contacts[i]=='')continue;
@@ -832,13 +887,14 @@ function convert_to_xml(){
   elements = elements2;
   elements2='';
 
-  var settings_charset_set=document.getElementById('settings_charset_set').value.toUpperCase();
-  if(settings_charset_set=="CUSTOMTEXT") settings_charset_set=document.getElementById('settings_charset_set_customtext').value.toUpperCase();
-
   //handle QUOTED-PRINTABLE
   for(var j=0;j<elements.length;j++){ //handle utf8 hex code
     var str=elements[j];
-    if(str.search(/;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE/i)>=0){
+    var match = str.match(/;CHARSET=(.*)[;:]/i);
+    var char='';
+    if(match==null)continue;
+    if(match.length>1 ) char = match[1].toUpperCase();
+    if(char=="UTF-8" && str.search(/;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE/i)>=0){
         var content = str.substr( str.indexOf(':') + 1 );
         var splited = content.split("=");
         for(var k=0;k<splited.length;k++)
@@ -859,13 +915,6 @@ function convert_to_xml(){
         }
         elements[j] = str.substr(0,str.indexOf(':')+1 )+''+str;
      }
-     else if( str.search(/;CHARSET=UTF-8/i)>=0){
-        elements[j] = str.replace(/;CHARSET=UTF-8/i,'');
-     }
-     else if( str.search(/CHARSET=/i)>=0 && settings_charset_set==''){
-       if(!charset_unsupported_wasShown){ alert(text__charset_unsupported); charset_unsupported_wasShown=true; }
-     }
-
   }
   
   for(var j=0;j<elements.length;j++){
@@ -955,6 +1004,7 @@ function download_one_file_ask(){
 }
 function prepare_and_download(text,filename,outType) {
   if(text==undefined || text==null || text==false || text==""){
+    if(convertingCanceledBeQuit)return;
     if(selectedLanguage=="de") alert("Fertig. Ende. Keine Ausgabe. Nicht zum Anzeigen.");
     else                       alert("Finish. End. No Output. Nothing to output.");
     return;}
@@ -1096,6 +1146,8 @@ function readMultipleFiles(e) {
   //inactiv:changedToAskLaterForZip //if(selectedLanguage=="de") text__export_as_zip="Exportiere als geteilte einzel VCard für jede einzelne Person. Und diese dann in eine .zip Datei?";
   var settings_charset_set=document.getElementById('settings_charset_set').value.toUpperCase();
   if(settings_charset_set=="CUSTOMTEXT") settings_charset_set=document.getElementById('settings_charset_set_customtext').value.toUpperCase();
+  if(settings_charset_set_customtext__temp_with_prio__just_once!='') settings_charset_set=settings_charset_set_customtext__temp_with_prio__just_once;
+  convertingCanceledBeQuit=false;
   var counterFiletypes = Array();
   counterFiletypes["xml"]   = 0;
   counterFiletypes["vcf"]   = 0;
